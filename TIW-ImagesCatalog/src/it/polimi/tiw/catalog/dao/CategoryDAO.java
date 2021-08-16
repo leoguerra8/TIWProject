@@ -69,4 +69,41 @@ public class CategoryDAO {
 		}
 		return categories;
 	}
+	
+	public List<Category> findAllCategories() throws SQLException {
+		List<Category> categories = new ArrayList<Category>();
+		
+		String query = "SELECT * FROM categories ORDER BY code";
+		try (PreparedStatement pStatement = connection.prepareStatement(query);) {
+			try (ResultSet res = pStatement.executeQuery();) {
+				while (res.next()) {
+					Category category = new Category();
+					category.setId(res.getInt("id"));
+					category.setName(res.getString("name"));
+					category.setCode(res.getString("code"));
+					category.setFatherId(res.getInt("fatherId"));
+				}
+			}
+		}
+		return categories;
+	}
+	
+	public int updateCategory(int categoryId, String code, int fatherId) throws SQLException {
+		String query = "UPDATE categories SET code = ?, fatherId = ? WHERE categoryId = ? ";
+		try (PreparedStatement pStatement = connection.prepareStatement(query);) {
+			pStatement.setString(1, code);
+			pStatement.setInt(2,  fatherId);
+			pStatement.setInt(3, categoryId);
+			
+			pStatement.executeUpdate();
+		
+			ResultSet generatedKeys = pStatement.getGeneratedKeys();
+			if (generatedKeys.next()) {
+				return generatedKeys.getInt(1);
+			} else {
+				throw new SQLException("Something went wrong while updating category: no ID has been obtained.");
+			}
+		}
+	}
+	
 }
