@@ -7,20 +7,30 @@
 	<context-param>
 		<param-name>dbUrl</param-name>
 		<param-value>jdbc:mysql://localhost:3306/db_catalog?serverTimezone=UTC</param-value>
-  	</context-param>
-  	<context-param>
-    	<param-name>dbUser</param-name>
-    	<param-value>root</param-value>
-  	</context-param>
-  	<context-param>
-    	<param-name>dbPassword</param-name>
-    	<param-value>simplesimple</param-value>
-  	</context-param>
-  	<context-param>
-    	<param-name>dbDriver</param-name>
-    	<param-value>com.mysql.cj.jdbc.Driver</param-value>
-  	</context-param>
+	</context-param>
+	<context-param>
+		<param-name>dbUser</param-name>
+		<param-value>root</param-value>
+	</context-param>
+	<context-param>
+		<param-name>dbPassword</param-name>
+		<param-value>simplesimple</param-value>
+	</context-param>
+	<context-param>
+		<param-name>dbDriver</param-name>
+		<param-value>com.mysql.cj.jdbc.Driver</param-value>
+	</context-param>
+	<filter>
+		<filter-name>LoginChecker</filter-name>
+		<filter-class>it.polimi.tiw.catalog.filters.LoginChecker</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>LoginChecker</filter-name>
+		<url-pattern>/CreateCategory</url-pattern>
+		<url-pattern>/GoToHomePage</url-pattern>
+		<url-pattern>/Logout</url-pattern>
+	</filter-mapping>
 	<welcome-file-list>
-		<welcome-file>GoToHomePage</welcome-file>
+		<welcome-file>index.html</welcome-file>
 	</welcome-file-list>
 </web-app>
