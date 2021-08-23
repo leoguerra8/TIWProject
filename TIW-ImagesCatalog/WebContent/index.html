@@ -1,22 +1,32 @@
 <!DOCTYPE html>
-<html>
-<head>
-<meta charset="ISO-8859-1">
-<title>Login page</title>
-<script src="utils.js" charset="utf-8" defer></script>
-<script src="loginManagement.js" charset="utf-8" defer></script>
+<html xmlns:th="http://www.thymeleaf.org">
+<!--in html:  th:with="lang=${language}" th:lang="${lang}" -->
 
+<head>
+	<meta charset="ISO-8859-1">
+	<title>Login page</title>
 </head>
+
 <body>
 	<h1>Welcome to the Images Catalog application</h1>
 
 	<form action="#">
 	<fieldset>
 		Username: <input type="text" name="username" required> <br>
-		Password: <input type="password" name="pwd" required><br>
+		Password: <input type="password" name="password" required><br>
 		<input id="loginbutton" type="button" value="login">
-		<p id="errormessage"></p>
-	</fieldset></form>
+		<p id="errorMsg"></p>
+	</fieldset>
+	</form>
+	
+<!-- Thymeleaf (?)
+	<form action="CheckLogin" method="POST">
+		Username: <input type="text" name="username" required> <br>
+		Password: <input type="password" name="pwd" required><br>
+		<input type="submit" value="login">
+		<p th:text=" ${errorMsg}"></p>
+	</form>
+-->
 
 </body>
 </html>
