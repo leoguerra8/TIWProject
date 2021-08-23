@@ -1,32 +1,31 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<!--in html:  th:with="lang=${language}" th:lang="${lang}" -->
-
 <head>
-	<meta charset="ISO-8859-1">
-	<title>Login page</title>
+<meta charset="UTF-8">
+<link rel="stylesheet" type="text/css" media="all"
+	href="" />
+<title>Login Page</title>
 </head>
-
 <body>
-	<h1>Welcome to the Images Catalog application</h1>
-
-	<form action="#">
-	<fieldset>
-		Username: <input type="text" name="username" required> <br>
-		Password: <input type="password" name="password" required><br>
-		<input id="loginbutton" type="button" value="login">
-		<p id="errorMsg"></p>
-	</fieldset>
-	</form>
 	
-<!-- Thymeleaf (?)
-	<form action="CheckLogin" method="POST">
-		Username: <input type="text" name="username" required> <br>
-		Password: <input type="password" name="pwd" required><br>
-		<input type="submit" value="login">
-		<p th:text=" ${errorMsg}"></p>
-	</form>
--->
 
+	<div>
+		<div class="formbox">
+
+			<h1>Login</h1>
+			<form th:action="@{/CheckLogin}" method="POST" autocomplete="off">
+				<p>
+					<input type="text" name="username" placeholder="Username" required>
+				</p>
+				<p>
+					<input type="password" name="password" placeholder="Password" required>
+				</p>
+				<p>
+					<input type="submit" value="Login">
+				</p>
+			</form>
+		</div>
+	</div>
 </body>
+
 </html>
