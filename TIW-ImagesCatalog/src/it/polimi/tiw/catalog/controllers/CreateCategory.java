@@ -58,7 +58,7 @@ public class CreateCategory extends HttpServlet {
 		int categoryId;
 		CategoryDAO categoryDAO = new CategoryDAO(connection);
 
-		if(fatherId == null) { // The category is a root
+		if(fatherId == -1) { // The category is a root
 			try {
 			int rootsNo = categoryDAO.getNumOfRoots();
 			if(rootsNo == MAX_CATEGORIES) {

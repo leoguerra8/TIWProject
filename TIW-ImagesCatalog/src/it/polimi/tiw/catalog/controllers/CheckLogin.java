@@ -7,21 +7,19 @@ import java.sql.SQLException;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.annotation.MultipartConfig;
-
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 import it.polimi.tiw.catalog.beans.User;
 import it.polimi.tiw.catalog.dao.UserDAO;
 import it.polimi.tiw.catalog.utils.ConnectionHandler;
-//import it.polimi.tiw.catalog.utils.SharedPropertyMessageResolver;
 
 @WebServlet("/CheckLogin")
 public class CheckLogin extends HttpServlet {
@@ -32,6 +30,15 @@ public class CheckLogin extends HttpServlet {
 	public CheckLogin() {
 		super();
 	}
+	
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+
+		String path = "/index.html";
+		ServletContext servletContext = getServletContext();
+		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
+		templateEngine.process(path, ctx, response.getWriter());
+	}
 
 	public void init() throws ServletException {
 		ServletContext servletContext = getServletContext();
@@ -40,7 +47,6 @@ public class CheckLogin extends HttpServlet {
 		templateResolver.setCacheable(false);
 		this.templateEngine = new TemplateEngine();
 		this.templateEngine.setTemplateResolver(templateResolver);
-//		this.templateEngine.setMessageResolver(new SharedPropertyMessageResolver(servletContext, "i18n", "login"));
 		templateResolver.setSuffix(".html");
 		connection = ConnectionHandler.getConnection(getServletContext());
 	}

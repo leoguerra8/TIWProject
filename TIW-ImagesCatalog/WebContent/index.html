@@ -3,15 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <link rel="stylesheet" type="text/css" media="all"
-	href="" />
+	href="./css/mystyle.css" th:href="@{/css/mystyle.css}"/>
 <title>Login Page</title>
 </head>
 <body>
-	
 
 	<div>
 		<div class="formbox">
-
 			<h1>Login</h1>
 			<form th:action="@{/CheckLogin}" method="POST" autocomplete="off">
 				<p>
@@ -27,5 +25,4 @@
 		</div>
 	</div>
 </body>
-
 </html>

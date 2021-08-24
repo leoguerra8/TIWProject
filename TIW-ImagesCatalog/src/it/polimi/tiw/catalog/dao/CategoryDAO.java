@@ -82,7 +82,11 @@ public class CategoryDAO {
 					category.setId(res.getInt("id"));
 					category.setName(res.getString("name"));
 					category.setCode(res.getString("code"));
-					category.setFatherId(res.getInt("fatherId"));
+					try { 
+						category.setFatherId(res.getInt("father"));
+					} catch (NullPointerException e) {
+						category.setFatherId(-1);
+					}
 				}
 			}
 		}

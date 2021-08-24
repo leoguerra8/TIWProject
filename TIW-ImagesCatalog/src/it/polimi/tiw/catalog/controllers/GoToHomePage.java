@@ -11,7 +11,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
@@ -19,7 +18,6 @@ import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 import it.polimi.tiw.catalog.beans.Category;
-import it.polimi.tiw.catalog.beans.User;
 import it.polimi.tiw.catalog.dao.CategoryDAO;
 import it.polimi.tiw.catalog.utils.ConnectionHandler;
 
@@ -59,6 +57,7 @@ public class GoToHomePage extends HttpServlet {
 			ctx.setVariable("categories", categories);
 			templateEngine.process(path, ctx, response.getWriter());
 		} catch (SQLException e) {
+			e.printStackTrace();
 			response.sendError(500, "Database access failed: GET GoToHomePage");
 			response.setCharacterEncoding("UTF-8");
 		}
