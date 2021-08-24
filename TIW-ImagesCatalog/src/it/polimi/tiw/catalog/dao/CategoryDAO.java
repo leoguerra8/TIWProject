@@ -20,7 +20,7 @@ public class CategoryDAO {
 
 	public int createCategory(String name, String code, int fatherId) throws SQLException {
 
-		String query = "INSERT into users (name, code, father) VALUES (?, ?, ?)";
+		String query = "INSERT into categories (name, code, father) VALUES (?, ?, ?)";
 		try (PreparedStatement pStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);) {
 			pStatement.setString(1, name);
 			pStatement.setString(2, code);

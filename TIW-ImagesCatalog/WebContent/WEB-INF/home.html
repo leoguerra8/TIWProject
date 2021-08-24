@@ -3,19 +3,43 @@
 <head>
 <meta charset="UTF-8">
 <link rel="stylesheet" type="text/css" media="all"
-	href="./css/mystyle.css" th:href="@{/css/mystyle.css}" />
+	th:href="@{/css/mystyle.css}" />
 <title>>Images Catalog Home Page</title>
 </head>
 
 <body>
 	<h1>Welcome to the Images Catalog</h1>
-		<div class="row" th:each="category : ${categories}">
-			<div class="column">
-				<p th:text="${category.code + ' ' + category.name}">1 First</p>
-			</div>
-			<div class="column">
-				<a th:href=@{/SelectCategory(categoryId=${category.id})}>Move</a>
+	<div class="row">
+		<div class="column">
+			<div class="row" th:each="category : ${categories}">
+				<div class="column">
+					<p th:text="${category.code + ' ' + category.name}">1 First</p>
+				</div>
+				<div class="column move-column">
+					<a th:href=@{/SelectCategory(categoryId=${category.id})}>Sposta</a>
+				</div>
 			</div>
 		</div>
+		<div class="column formbox">
+			<h1>Create a new category</h1>
+			<form th:action="@{/CreateCategory}" method="POST" autocomplete="off">
+				<p>
+					<input type="text" name="name" placeholder="Name" required>
+				</p>
+				<p>
+					<label for="fatherId">Choose a father:</label>
+					<select name="fatherId" th:field="*{fatherId}">
+						<option value="">--</option>
+						<option th:each="category : ${categories}"
+							th:value="${category.id}"
+							th:utext="${category.code + ' ' + category.name}"></option>
+					</select>
+				</p>
+				<p>
+					<input type="submit" value="Crea">
+				</p>
+			</form>
+		</div>
+	</div>
 </body>
 </html>
