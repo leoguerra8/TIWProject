@@ -3,15 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <link rel="stylesheet" type="text/css" media="all"
-	href="./css/mystyle.css" />
-<link rel="stylesheet" type="text/css" media="all"
-	href="" />
-<title>Image Catalog Home Page</title>
+	href="./css/mystyle.css" th:href="@{/css/mystyle.css}" />
+<title>>Images Catalog Home Page</title>
 </head>
 
-
 <body>
-<h1>NFA A MATTA TOO DICO</h1>
+	<h1>Welcome to the Images Catalog</h1>
+		<div class="row" th:each="category : ${categories}">
+			<div class="column">
+				<p th:text="${category.code + ' ' + category.name}">1 First</p>
+			</div>
+			<div class="column">
+				<a th:href=@{/SelectCategory(categoryId=${category.id})}>Move</a>
+			</div>
+		</div>
 </body>
-
 </html>

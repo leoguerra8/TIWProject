@@ -87,6 +87,7 @@ public class CategoryDAO {
 					} catch (NullPointerException e) {
 						category.setFatherId(-1);
 					}
+					categories.add(category);
 				}
 			}
 		}
