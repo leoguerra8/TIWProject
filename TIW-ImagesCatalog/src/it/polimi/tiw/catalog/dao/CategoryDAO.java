@@ -52,10 +52,8 @@ public class CategoryDAO {
 			if (res.next()) {
 				code = res.getString("code");
 			}
-			if(code!=null) return code;
+			if (code != null ) return code;
 			else return "-1";
-		} catch(SQLException e) {
-			return "-1";
 		}
 	}
 

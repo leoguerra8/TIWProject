@@ -11,11 +11,19 @@
 	<h1>Welcome to the Images Catalog</h1>
 	<div class="row" th:each="category : ${categories}">
 		<div class="column">
-			<p th:text="${category.code + ' ' + category.name}" th:style="${category.belongsTo(subtreeIndexes) ? 'color:#ff1a1a' : 'color:#000000'}" >1 First</p>
+			<p th:text="${category.code + ' ' + category.name}"
+				th:style="${category.belongsTo(subtreeIndexes) ? 'color:#ff1a1a' : 'color:#000000'}">1
+				First</p>
 		</div>
 		<div class="column move-column">
-			<a th:unless="${category.belongsTo(subtreeIndexes) || category.id == fatherId}"
-			th:href=@{/UpdateCategory(categoryId=${category.id})}>Sposta qui</a>
+			<form
+				th:unless="${category.belongsTo(subtreeIndexes) || category.id == fatherId}"
+				th:action="@{/UpdateCategory}" method="POST" id="move-category-form">
+				<input type="hidden" name="categoryId" th:value="${categoryId}">
+				<input type="hidden" name="oldFatherId" th:value="${fatherId}">
+				<input type="hidden" name="newFatherId" th:value="${category.id}">
+				<input type="submit" value="Sposta qui" />
+			</form>
 		</div>
 	</div>
 </body>
