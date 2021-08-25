@@ -1,5 +1,8 @@
 package it.polimi.tiw.catalog.beans;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class Category {
 	
 	private int id;
@@ -30,6 +33,10 @@ public class Category {
 	}
 	public void setFatherId(int fatherId) {
 		this.fatherId = fatherId;
+	}
+	
+	public boolean belongsTo(ArrayList<Integer> subtreeIndexes) {
+		return subtreeIndexes.contains(this.id);
 	}
 
 }

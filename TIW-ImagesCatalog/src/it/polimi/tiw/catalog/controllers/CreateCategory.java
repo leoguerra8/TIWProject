@@ -73,16 +73,19 @@ public class CreateCategory extends HttpServlet {
 			}
 		} else { // The category is a sub-category
 			String lastChildCode;
+			String fatherCode;
 			try {
 				lastChildCode = categoryDAO.findLastChildCode(fatherId);
+				fatherCode = categoryDAO.findCategoryCode(fatherId);
 
-				int lastDigit = Integer.valueOf(lastChildCode.charAt(lastChildCode.length()-1));
-				if(lastDigit == MAX_CATEGORIES) {
+				int lastDigit = Character.getNumericValue(lastChildCode.charAt(lastChildCode.length()-1));
+				if (lastDigit == MAX_CATEGORIES) {
 					response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 					response.getWriter().println("The number of sub-categories cannot be more that 9");
 					return;
 				} else {
-					code = lastChildCode.substring(0, lastChildCode.length()-1) + String.valueOf(lastDigit+1);
+					if (lastChildCode.equals("-1")) code = fatherCode + "1";
+					else code = lastChildCode.substring(0, lastChildCode.length()-1) + String.valueOf(lastDigit+1);
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -101,6 +104,7 @@ public class CreateCategory extends HttpServlet {
 		response.setCharacterEncoding("UTF-8");
 		response.getWriter().print(categoryId);
 
+		response.sendRedirect("GoToHomePage");
 	}
 
 	public void destroy() {

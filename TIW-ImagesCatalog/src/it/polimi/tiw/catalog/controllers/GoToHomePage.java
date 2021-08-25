@@ -51,9 +51,8 @@ public class GoToHomePage extends HttpServlet {
 		List<Category> categories;
 		try {
 			categories = categoryDAO.findAllCategories();
-			String path = "/WEB-INF/home.html";
-			ServletContext servletContext = getServletContext();
-			final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
+			String path = "/WEB-INF/templates/home.html";
+			final WebContext ctx = new WebContext(request, response, getServletContext(), request.getLocale());
 			ctx.setVariable("categories", categories);
 			templateEngine.process(path, ctx, response.getWriter());
 		} catch (SQLException e) {

@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,11 +21,15 @@ public class CategoryDAO {
 
 	public int createCategory(String name, String code, int fatherId) throws SQLException {
 
-		String query = "INSERT into categories (name, code, father) VALUES (?, ?, ?)";
+		String query = "INSERT INTO categories (name, code, father) VALUES (?, ?, ?)";
 		try (PreparedStatement pStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);) {
 			pStatement.setString(1, name);
 			pStatement.setString(2, code);
+			if(fatherId == -1) {
+				pStatement.setNull(3, Types.BIGINT);
+			} else {
 			pStatement.setInt(3, fatherId);
+			}
 			pStatement.executeUpdate();
 
 			ResultSet generatedKeys = pStatement.getGeneratedKeys();
@@ -39,7 +44,7 @@ public class CategoryDAO {
 	public String findLastChildCode(int categoryId) throws SQLException {
 		String code = null;
 
-		String query = "SELECT MAX(code) FROM categories WHERE father = ?";
+		String query = "SELECT MAX(code) AS code FROM categories WHERE father = ?";
 
 		try (PreparedStatement pStatement = connection.prepareStatement(query);) {
 			pStatement.setInt(1, categoryId);
@@ -47,9 +52,10 @@ public class CategoryDAO {
 			if (res.next()) {
 				code = res.getString("code");
 			}
+			return code;
+		} catch(SQLException e) {
+			return "-1";
 		}
-
-		return code;
 	}
 
 	public List<Category> findCategoriesByFather(int fatherId) throws SQLException {
@@ -127,4 +133,34 @@ public class CategoryDAO {
 		}
 	}
 
+	public ArrayList<Integer> getCategorySubtree(int categoryId) throws SQLException {
+		ArrayList<Integer> subtreeIndexes = new ArrayList<>();
+
+		String query = "SELECT id FROM categories WHERE code LIKE CONCAT('', (SELECT code FROM categories WHERE id = ?), '%', '');";
+		try (PreparedStatement pStatement = connection.prepareStatement(query);) {
+			pStatement.setInt(1, categoryId);
+			try (ResultSet res = pStatement.executeQuery();) {
+				while (res.next()) {
+					subtreeIndexes.add(res.getInt("id"));
+				}
+			}	
+		}
+		return subtreeIndexes;
 	}
+	
+	public String findCategoryCode(int categoryId) throws SQLException {
+		String code = null;
+		
+		String query = "SELECT code FROM categories WHERE id = ?"; 
+		
+		try (PreparedStatement pStatement = connection.prepareStatement(query);) {
+			pStatement.setInt(1, categoryId);
+			ResultSet res = pStatement.executeQuery();
+			if (res.next()) {
+				code = res.getString("code");
+			}
+			return code;
+		}
+	}
+
+}

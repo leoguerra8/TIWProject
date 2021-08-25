@@ -16,7 +16,12 @@
 					<p th:text="${category.code + ' ' + category.name}">1 First</p>
 				</div>
 				<div class="column move-column">
-					<a th:href=@{/SelectCategory(categoryId=${category.id})}>Sposta</a>
+					<form th:action="@{/SelectCategory}" method="POST"
+						id="move-category-form">
+						<input type="hidden" name="categoryId" th:value="${category.id}">
+						<input type="hidden" name="fatherId" th:value="${category.fatherId}">
+						<input type="submit" th:value="Sposta"/>
+					</form>
 				</div>
 			</div>
 		</div>
@@ -27,8 +32,8 @@
 					<input type="text" name="name" placeholder="Name" required>
 				</p>
 				<p>
-					<label for="fatherId">Choose a father:</label>
-					<select name="fatherId" th:field="*{fatherId}">
+					<label for="fatherId">Choose a father:</label> <select
+						name="fatherId" th:field="*{fatherId}">
 						<option value="">--</option>
 						<option th:each="category : ${categories}"
 							th:value="${category.id}"

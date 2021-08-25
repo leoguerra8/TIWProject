@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" type="text/css" media="all"
+	th:href="@{/css/mystyle.css}" />
+<title>>Images Catalog Home Page</title>
+</head>
+
+<body>
+	<h1>Welcome to the Images Catalog</h1>
+	<div class="row" th:each="category : ${categories}">
+		<div class="column">
+			<p th:text="${category.code + ' ' + category.name}" th:style="${category.belongsTo(subtreeIndexes) ? 'color:#ff1a1a' : 'color:#000000'}" >1 First</p>
+		</div>
+		<div class="column move-column">
+			<a th:unless="${category.belongsTo(subtreeIndexes) || category.id == fatherId}"
+			th:href=@{/UpdateCategory(categoryId=${category.id})}>Sposta qui</a>
+		</div>
+	</div>
+</body>
+</html>
