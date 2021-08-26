@@ -8,14 +8,23 @@
 </head>
 
 <body>
-	<h1>Welcome to the Images Catalog</h1>
-	<div class="row">
+	<div>
+		<ul class="header">
+			<li><a class="logout-button" th:href="@{/Logout}">Logout</a></li>
+			<li><b><a class="user-header"
+					th:text="${'Benvenuto ' + session.user.name + ' ' + session.user.surname}">
+					</a></b></li>
+		</ul>
+	</div>
+	<h1>Catalogo Immagini</h1>
+	<hr>
+	<div class="container">
 		<div class="column">
 			<div class="row" th:each="category : ${categories}">
-				<div class="column">
+				<div class="column" id="left-column">
 					<p th:text="${category.code + ' ' + category.name}">1 First</p>
 				</div>
-				<div class="column move-column">
+				<div class="move-column" id="right-column">
 					<form th:action="@{/SelectCategory}" method="POST"
 						id="move-category-form">
 						<input type="hidden" name="categoryId" th:value="${category.id}">

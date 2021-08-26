@@ -8,14 +8,24 @@
 </head>
 
 <body>
+	<div>
+		<ul class="header">
+			<li><a class="logout-button" th:href="@{/Logout}">Logout</a></li>
+			<li><b><a class="user-header"
+					th:text="${'Benvenuto ' + session.user.name + ' ' + session.user.surname}">
+					</a></b></li>
+		</ul>
+	</div>
 	<h1>Welcome to the Images Catalog</h1>
+	<hr>
+	<div class="container">
 	<div class="row" th:each="category : ${categories}">
 		<div class="column">
 			<p th:text="${category.code + ' ' + category.name}"
 				th:style="${category.belongsTo(subtreeIndexes) ? 'color:#ff1a1a' : 'color:#000000'}">1
 				First</p>
 		</div>
-		<div class="column move-column">
+		<div class="move-column">
 			<form
 				th:unless="${category.belongsTo(subtreeIndexes) || category.id == fatherId}"
 				th:action="@{/UpdateCategory}" method="POST" id="move-category-form">
@@ -25,6 +35,7 @@
 				<input type="submit" value="Sposta qui" />
 			</form>
 		</div>
+	</div>
 	</div>
 </body>
 </html>
