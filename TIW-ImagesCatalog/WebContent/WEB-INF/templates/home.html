@@ -12,11 +12,11 @@
 		<ul class="header">
 			<li><a class="logout-button" th:href="@{/Logout}">Logout</a></li>
 			<li><b><a class="user-header"
-					th:text="${'Benvenuto ' + session.user.name + ' ' + session.user.surname}">
+					th:text="#{User} + ' ' + ${session.user.name + ' ' + session.user.surname}">
 					</a></b></li>
 		</ul>
 	</div>
-	<h1>Catalogo Immagini</h1>
+	<h1 th:text="#{PageTitle}">Catalogo Immagini</h1>
 	<hr>
 	<div class="container">
 		<div class="column">
@@ -30,19 +30,19 @@
 						<input type="hidden" name="categoryId" th:value="${category.id}">
 						<input type="hidden" name="fatherId" th:value="${category.fatherId}">
 						<input type="hidden" name="categoryCode" th:value="${category.code}">
-						<input type="submit" value="Sposta"/>
+						<input type="submit" th:value="#{Move}"/>
 					</form>
 				</div>
 			</div>
 		</div>
 		<div class="column formbox">
-			<h1>Create a new category</h1>
+			<h1 th:text="#{FormTitle}">Create a new category</h1>
 			<form th:action="@{/CreateCategory}" method="POST" autocomplete="off">
 				<p>
-					<input type="text" name="name" placeholder="Name" required>
+					<input type="text" name="name" th:placeholder="#{NamePlaceholder}" required>
 				</p>
 				<p>
-					<label for="fatherId">Choose a father:</label> <select
+					<label th:text="#{FatherLabel}" for="fatherId">Choose a father:</label> <select
 						name="fatherId" th:field="*{fatherId}">
 						<option value="">--</option>
 						<option th:each="category : ${categories}"
@@ -51,7 +51,7 @@
 					</select>
 				</p>
 				<p>
-					<input type="submit" value="Crea">
+					<input type="submit" th:value="#{CreateButton}">
 				</p>
 			</form>
 		</div>

@@ -20,6 +20,7 @@ import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 import it.polimi.tiw.catalog.beans.User;
 import it.polimi.tiw.catalog.dao.UserDAO;
 import it.polimi.tiw.catalog.utils.ConnectionHandler;
+import it.polimi.tiw.catalog.utils.SharedPropertyMessageResolver;
 
 @WebServlet("/CheckLogin")
 public class CheckLogin extends HttpServlet {
@@ -47,6 +48,7 @@ public class CheckLogin extends HttpServlet {
 		templateResolver.setCacheable(false);
 		this.templateEngine = new TemplateEngine();
 		this.templateEngine.setTemplateResolver(templateResolver);
+		this.templateEngine.setMessageResolver(new SharedPropertyMessageResolver(servletContext, "i18n", "login"));
 		templateResolver.setSuffix(".html");
 		connection = ConnectionHandler.getConnection(getServletContext());
 	}
