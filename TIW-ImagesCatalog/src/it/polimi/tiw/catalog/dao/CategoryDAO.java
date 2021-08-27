@@ -28,7 +28,7 @@ public class CategoryDAO {
 			if(fatherId == -1) {
 				pStatement.setNull(3, Types.BIGINT);
 			} else {
-			pStatement.setInt(3, fatherId);
+				pStatement.setInt(3, fatherId);
 			}
 			pStatement.executeUpdate();
 
@@ -99,23 +99,23 @@ public class CategoryDAO {
 		return categories;
 	}
 
-	public int updateCategory(int categoryId, String code, int fatherId) throws SQLException {
-		String query = "UPDATE categories SET code = ?, fatherId = ? WHERE categoryId = ? ";
-		try (PreparedStatement pStatement = connection.prepareStatement(query);) {
-			pStatement.setString(1, code);
-			pStatement.setInt(2,  fatherId);
-			pStatement.setInt(3, categoryId);
-
-			pStatement.executeUpdate();
-
-			ResultSet generatedKeys = pStatement.getGeneratedKeys();
-			if (generatedKeys.next()) {
-				return generatedKeys.getInt(1);
-			} else {
-				throw new SQLException("Something went wrong while updating category: no ID has been obtained.");
-			}
-		}
-	}
+	//	private int updateCategory(int categoryId, String code, int fatherId) throws SQLException {
+	//		String query = "UPDATE categories SET code = ?, fatherId = ? WHERE categoryId = ? ";
+	//		try (PreparedStatement pStatement = connection.prepareStatement(query);) {
+	//			pStatement.setString(1, code);
+	//			pStatement.setInt(2,  fatherId);
+	//			pStatement.setInt(3, categoryId);
+	//
+	//			pStatement.executeUpdate();
+	//
+	//			ResultSet generatedKeys = pStatement.getGeneratedKeys();
+	//			if (generatedKeys.next()) {
+	//				return generatedKeys.getInt(1);
+	//			} else {
+	//				throw new SQLException("Something went wrong while updating category: no ID has been obtained.");
+	//			}
+	//		}
+	//	}
 
 	public int getNumOfRoots() throws SQLException {
 		String query = "SELECT count(*) AS rootsNo FROM categories WHERE fatherId = NULL";
@@ -146,12 +146,12 @@ public class CategoryDAO {
 		}
 		return subtreeIndexes;
 	}
-	
+
 	public String findCategoryCode(int categoryId) throws SQLException {
 		String code = null;
-		
+
 		String query = "SELECT code FROM categories WHERE id = ?"; 
-		
+
 		try (PreparedStatement pStatement = connection.prepareStatement(query);) {
 			pStatement.setInt(1, categoryId);
 			ResultSet res = pStatement.executeQuery();
@@ -159,6 +159,59 @@ public class CategoryDAO {
 				code = res.getString("code");
 			}
 			return code;
+		}
+	}
+
+	public void updateCategory(int categoryId, int oldFatherId, int newFatherId, String oldCategoryCode, String newCategoryCode) throws SQLException {
+		String update1 = "UPDATE categories SET code = ?, father = ? WHERE id = ?";
+		String update2 = "UPDATE categories SET code = ? WHERE code = ?";
+		String query = "SELECT code FROM categories WHERE code LIKE CONCAT(?, '%', '')";
+		try {
+			connection.setAutoCommit(false);
+			PreparedStatement pStatement1 = connection.prepareStatement(update1);
+			PreparedStatement pStatement2 = connection.prepareStatement(query);
+			pStatement1.setString(1, newCategoryCode);
+			pStatement1.setInt(2, newFatherId);
+			pStatement1.setInt(3, categoryId);
+			pStatement2.setString(1, oldCategoryCode);
+			pStatement1.executeUpdate();
+			ResultSet res1 = pStatement2.executeQuery();
+			while (res1.next()) {
+				String oldChildCode = res1.getString("code");
+				PreparedStatement pStatement5 = connection.prepareStatement(update2);
+				String newChildCode = newCategoryCode + oldChildCode.substring(oldCategoryCode.length());
+				pStatement5.setString(1, newChildCode);
+				pStatement5.setString(2, oldChildCode);
+				pStatement5.executeUpdate();
+			}
+			String lastBrotherCode = this.findLastChildCode(oldFatherId);
+			if (!lastBrotherCode.equals("-1") && lastBrotherCode.compareTo(oldCategoryCode) > 0) {
+				PreparedStatement pStatement3 = connection.prepareStatement(update2);
+				PreparedStatement pStatement4 = connection.prepareStatement(query);
+				pStatement3.setString(1, oldCategoryCode);
+				pStatement3.setString(2, lastBrotherCode);
+				pStatement4.setString(1, lastBrotherCode);
+				pStatement3.executeUpdate();
+				ResultSet res2 = pStatement4.executeQuery();
+				while (res2.next()) {
+					String oldChildCode = res1.getString("code");
+					PreparedStatement pStatement6 = connection.prepareStatement(update2);
+					String newChildCode = oldCategoryCode + oldChildCode.substring(lastBrotherCode.length());
+					pStatement6.setString(1, newChildCode);
+					pStatement6.setString(2, oldChildCode);
+					pStatement6.executeUpdate();
+				}
+			}
+			connection.commit();
+		} catch (SQLException e) {
+			if (connection != null) {
+				try {
+					System.err.print("Transaction is being rolled back");
+					connection.rollback();
+				} catch (SQLException ex) {
+					ex.printStackTrace();;
+				}
+			}
 		}
 	}
 

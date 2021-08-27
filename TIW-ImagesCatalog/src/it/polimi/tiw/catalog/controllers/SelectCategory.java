@@ -47,10 +47,14 @@ public class SelectCategory extends HttpServlet {
 	    
 	    String categoryId = null;
 	    String fatherId = null;
+	    String categoryCode = null;
 		
 	    categoryId = request.getParameter("categoryId");
 	    fatherId = request.getParameter("fatherId");
-	    if (categoryId == null || categoryId.isEmpty() || fatherId == null || fatherId.isEmpty()) {
+	    categoryCode = request.getParameter("categoryCode");
+	    if (categoryId == null || categoryId.isEmpty() || 
+	    		fatherId == null || fatherId.isEmpty() ||
+	    		categoryCode == null || categoryCode.isEmpty()) {
 	    	response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			response.getWriter().println("Missing or incorrect parameters");
 			return;
@@ -94,6 +98,7 @@ public class SelectCategory extends HttpServlet {
 	    ctx.setVariable("categoryId", categoryId);
 	    ctx.setVariable("fatherId", fatherId);
 	    ctx.setVariable("subtreeIndexes", subtreeIndexes);
+	    ctx.setVariable("categoryCode", categoryCode);
 	    response.setCharacterEncoding("UTF-8");
 	    templateEngine.process(path, ctx, response.getWriter());
 	}

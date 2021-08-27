@@ -24,6 +24,7 @@ import it.polimi.tiw.catalog.utils.ConnectionHandler;
 
 @WebServlet("/UpdateCategory")
 public class UpdateCategory extends HttpServlet {
+	private static final int MAX_CATEGORIES = 9;
 	private static final long serialVersionUID = 1L;
 	private Connection connection;
 	private TemplateEngine templateEngine;
@@ -48,10 +49,14 @@ public class UpdateCategory extends HttpServlet {
 	    String categoryId = null;
 	    String oldFatherId = null;
 	    String newFatherId = null;
+	    String oldCategoryCode = null;
+		String newCategoryCode = null;
 		
 	    categoryId = request.getParameter("categoryId");
 	    oldFatherId = request.getParameter("oldFatherId");
 	    newFatherId = request.getParameter("newFatherId");
+	    oldCategoryCode = request.getParameter("oldCategoryCode");
+	    
 	    if (categoryId == null || categoryId.isEmpty() || 
 	    		oldFatherId == null || oldFatherId.isEmpty() ||
 	    		newFatherId == null || newFatherId.isEmpty()) {
@@ -61,7 +66,7 @@ public class UpdateCategory extends HttpServlet {
 	    }
 		
 	    try {
-	    	if (Integer.parseInt(categoryId) < 0) {
+	    	if (Integer.parseInt(categoryId) < 0 || Integer.parseInt(newFatherId) < 0) {
 	    		response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 				response.getWriter().println("Missing or incorrect parameters");
 				return;
@@ -72,8 +77,35 @@ public class UpdateCategory extends HttpServlet {
 			return;
 	    }
 	    
-	    List<Category> categories = null;
 	    CategoryDAO categoryDAO = new CategoryDAO(connection);
+	    
+	    String lastChildCode;
+		String fatherCode;
+		
+		try {
+			lastChildCode = categoryDAO.findLastChildCode(Integer.parseInt(newFatherId));
+			fatherCode = categoryDAO.findCategoryCode(Integer.parseInt(newFatherId));
+
+			int lastDigit = Character.getNumericValue(lastChildCode.charAt(lastChildCode.length()-1));
+			if (lastDigit == MAX_CATEGORIES) {
+				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+				response.getWriter().println("The number of sub-categories cannot be more that 9");
+				return;
+			} else {
+				if (lastChildCode.equals("-1")) newCategoryCode = fatherCode + "1";
+				else newCategoryCode = lastChildCode.substring(0, lastChildCode.length()-1) + String.valueOf(lastDigit+1);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	    
+	    try {
+	    	categoryDAO.updateCategory(Integer.parseInt(categoryId), Integer.parseInt(oldFatherId), Integer.parseInt(newFatherId), oldCategoryCode, newCategoryCode);
+	    } catch (SQLException e) {
+	    	response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			response.getWriter().println("Not possible to update category");
+			return;
+	    }
 	    
 	    String path = "/WEB-INF/templates/update.html";
 
