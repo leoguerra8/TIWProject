@@ -93,6 +93,11 @@ public class UpdateCategory extends HttpServlet {
 				return;
 			} else {
 				if (lastChildCode.equals("-1")) newCategoryCode = fatherCode + "1";
+				else if (lastChildCode.equals(fatherCode)) {
+					lastChildCode = categoryDAO.findLastChildCode(Integer.parseInt(categoryId));
+					lastDigit = Character.getNumericValue(lastChildCode.charAt(lastChildCode.length()-1));
+					newCategoryCode = oldCategoryCode.substring(0, oldCategoryCode.length()-1) + String.valueOf(lastDigit+1);
+				}
 				else newCategoryCode = lastChildCode.substring(0, lastChildCode.length()-1) + String.valueOf(lastDigit+1);
 			}
 		} catch (SQLException e) {

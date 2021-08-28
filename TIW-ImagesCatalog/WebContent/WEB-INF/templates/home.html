@@ -13,7 +13,7 @@
 			<li><a class="logout-button" th:href="@{/Logout}">Logout</a></li>
 			<li><b><a class="user-header"
 					th:text="#{User} + ' ' + ${session.user.name + ' ' + session.user.surname}">
-					</a></b></li>
+				</a></b></li>
 		</ul>
 	</div>
 	<h1 th:text="#{PageTitle}">Catalogo Immagini</h1>
@@ -28,9 +28,10 @@
 					<form th:action="@{/SelectCategory}" method="POST"
 						id="move-category-form">
 						<input type="hidden" name="categoryId" th:value="${category.id}">
-						<input type="hidden" name="fatherId" th:value="${category.fatherId}">
-						<input type="hidden" name="categoryCode" th:value="${category.code}">
-						<input type="submit" th:value="#{Move}"/>
+						<input type="hidden" name="fatherId"
+							th:value="${category.fatherId}"> <input type="hidden"
+							name="categoryCode" th:value="${category.code}"> <input
+							type="submit" th:value="#{Move}" />
 					</form>
 				</div>
 			</div>
@@ -39,12 +40,14 @@
 			<h1 th:text="#{FormTitle}">Create a new category</h1>
 			<form th:action="@{/CreateCategory}" method="POST" autocomplete="off">
 				<p>
-					<input type="text" name="name" th:placeholder="#{NamePlaceholder}" required>
+					<input type="text" name="name" th:placeholder="#{NamePlaceholder}"
+						required>
 				</p>
 				<p>
-					<label th:text="#{FatherLabel}" for="fatherId">Choose a father:</label> <select
-						name="fatherId" th:field="*{fatherId}">
-						<option value="">--</option>
+					<label th:text="#{FatherLabel}" for="fatherId">Choose a
+						father:</label> <select name="fatherId" th:field="*{fatherId}"
+						th:disabled="${isRoot} == 'on'">
+						<option th:utext="none" th:value="-1"></option>
 						<option th:each="category : ${categories}"
 							th:value="${category.id}"
 							th:utext="${category.code + ' ' + category.name}"></option>

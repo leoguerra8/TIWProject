@@ -99,26 +99,8 @@ public class CategoryDAO {
 		return categories;
 	}
 
-	//	private int updateCategory(int categoryId, String code, int fatherId) throws SQLException {
-	//		String query = "UPDATE categories SET code = ?, fatherId = ? WHERE categoryId = ? ";
-	//		try (PreparedStatement pStatement = connection.prepareStatement(query);) {
-	//			pStatement.setString(1, code);
-	//			pStatement.setInt(2,  fatherId);
-	//			pStatement.setInt(3, categoryId);
-	//
-	//			pStatement.executeUpdate();
-	//
-	//			ResultSet generatedKeys = pStatement.getGeneratedKeys();
-	//			if (generatedKeys.next()) {
-	//				return generatedKeys.getInt(1);
-	//			} else {
-	//				throw new SQLException("Something went wrong while updating category: no ID has been obtained.");
-	//			}
-	//		}
-	//	}
-
 	public int getNumOfRoots() throws SQLException {
-		String query = "SELECT count(*) AS rootsNo FROM categories WHERE fatherId = NULL";
+		String query = "SELECT count(*) AS rootsNo FROM categories WHERE father IS NULL";
 		try(Statement statement = connection.createStatement();) {	
 			ResultSet result = statement.executeQuery(query);
 			if(result.next()) {
@@ -165,7 +147,7 @@ public class CategoryDAO {
 	public void updateCategory(int categoryId, int oldFatherId, int newFatherId, String oldCategoryCode, String newCategoryCode) throws SQLException {
 		String update1 = "UPDATE categories SET code = ?, father = ? WHERE id = ?";
 		String update2 = "UPDATE categories SET code = ? WHERE code = ?";
-		String query = "SELECT code FROM categories WHERE code LIKE CONCAT(?, '%', '')";
+		String query = "SELECT code FROM categories WHERE code LIKE CONCAT(?, '%', '') AND code != ?";
 		try {
 			connection.setAutoCommit(false);
 			PreparedStatement pStatement1 = connection.prepareStatement(update1);
@@ -174,6 +156,7 @@ public class CategoryDAO {
 			pStatement1.setInt(2, newFatherId);
 			pStatement1.setInt(3, categoryId);
 			pStatement2.setString(1, oldCategoryCode);
+			pStatement2.setString(2, newCategoryCode);
 			pStatement1.executeUpdate();
 			ResultSet res1 = pStatement2.executeQuery();
 			while (res1.next()) {
@@ -191,10 +174,11 @@ public class CategoryDAO {
 				pStatement3.setString(1, oldCategoryCode);
 				pStatement3.setString(2, lastBrotherCode);
 				pStatement4.setString(1, lastBrotherCode);
+				pStatement4.setString(2, newCategoryCode);
 				pStatement3.executeUpdate();
 				ResultSet res2 = pStatement4.executeQuery();
 				while (res2.next()) {
-					String oldChildCode = res1.getString("code");
+					String oldChildCode = res2.getString("code");
 					PreparedStatement pStatement6 = connection.prepareStatement(update2);
 					String newChildCode = oldCategoryCode + oldChildCode.substring(lastBrotherCode.length());
 					pStatement6.setString(1, newChildCode);
