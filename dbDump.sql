@@ -28,9 +28,12 @@ CREATE TABLE `categories` (
   `code` varchar(255) NOT NULL,
   `father` int DEFAULT NULL,
   PRIMARY KEY (`id`),
+  UNIQUE KEY `id_UNIQUE` (`id`),
+  UNIQUE KEY `name_UNIQUE` (`name`),
+  UNIQUE KEY `code_UNIQUE` (`code`),
   KEY `father` (`father`),
-  CONSTRAINT `categories_ibfk_1` FOREIGN KEY (`father`) REFERENCES `categories` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  CONSTRAINT `categories_ibfk_1` FOREIGN KEY (`father`) REFERENCES `categories` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -39,7 +42,7 @@ CREATE TABLE `categories` (
 
 LOCK TABLES `categories` WRITE;
 /*!40000 ALTER TABLE `categories` DISABLE KEYS */;
-INSERT INTO `categories` VALUES (1,'Archeologia','1',NULL),(2,'Dinosauri','11',1),(3,'Saurischi','111',2),(4,'Ornitorischi','112',2),(5,'Tirannosauro','1111',3),(6,'Spinosauro','1112',3),(7,'Triceratopo','1121',4),(8,'Stegosauro','1122',4),(9,'Informatica','2',NULL),(10,'Linguaggi di programmazione','21',9),(11,'C','211',10),(12,'Java','212',10),(13,'Scienze','3',NULL),(14,'Fisica','31',13),(15,'Chimica','32',13),(16,'Biologia','33',13),(17,'Meteoriti','113',2),(19,'Lunguaggi a oggetti','213',10),(20,'Linguaggi funzionali','214',10);
+INSERT INTO `categories` VALUES (1,'Archeologia','1',NULL),(2,'Dinosauri','11',1),(3,'Saurischi','111',2),(4,'Ornitorischi','112',2),(5,'Tirannosauro','1111',3),(6,'Spinosauro','1112',3),(7,'Triceratopo','1121',4),(8,'Stegosauro','1122',4),(9,'Informatica','2',NULL),(10,'Linguaggi di programmazione','21',9),(11,'C','2111',20),(12,'Java','2121',19),(13,'Scienze','3',NULL),(14,'Fisica','31',13),(15,'Chimica','32',13),(16,'Biologia','33',13),(17,'Meteoriti','113',2),(19,'Lunguaggi a oggetti','212',10),(20,'Linguaggi funzionali','211',10);
 /*!40000 ALTER TABLE `categories` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -57,7 +60,8 @@ CREATE TABLE `users` (
   `name` varchar(45) NOT NULL,
   `surname` varchar(45) NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `username` (`username`)
+  UNIQUE KEY `username` (`username`),
+  UNIQUE KEY `id_UNIQUE` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -80,4 +84,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-08-27 17:46:40
+-- Dump completed on 2021-08-29 12:59:00
