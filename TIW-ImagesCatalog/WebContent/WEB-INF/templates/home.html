@@ -47,7 +47,7 @@
 					<label th:text="#{FatherLabel}" for="fatherId">Choose a
 						father:</label> <select name="fatherId" th:field="*{fatherId}"
 						th:disabled="${isRoot} == 'on'">
-						<option th:utext="none" th:value="-1"></option>
+						<option th:utext="'NONE (' + #{Root} + ')'" th:value="-1"></option>
 						<option th:each="category : ${categories}"
 							th:value="${category.id}"
 							th:utext="${category.code + ' ' + category.name}"></option>
