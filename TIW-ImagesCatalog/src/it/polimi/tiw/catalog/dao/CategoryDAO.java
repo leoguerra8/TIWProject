@@ -198,5 +198,18 @@ public class CategoryDAO {
 			}
 		}
 	}
+	
+	public boolean existsCategory(String name) throws SQLException {
+		String query = "SELECT * FROM categories WHERE name = ?";
+		try(PreparedStatement pStatement = connection.prepareStatement(query);) {	
+			pStatement.setString(1, name);
+			ResultSet result = pStatement.executeQuery();
+			if(result.next()) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+	}
 
 }

@@ -44,11 +44,7 @@ public class CreateCategory extends HttpServlet {
 			name = StringEscapeUtils.escapeJava(request.getParameter("name"));
 			fatherId = Integer.parseInt(request.getParameter("fatherId"));
 		} catch (NumberFormatException | NullPointerException e) {
-			isBadRequest = true;
 			e.printStackTrace();
-		}
-
-		if (isBadRequest) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			response.getWriter().println("Incorrect or missing request parameters");
 			return;
@@ -56,7 +52,19 @@ public class CreateCategory extends HttpServlet {
 
 		// Create Category
 		int categoryId;
+		boolean existsCategory;
 		CategoryDAO categoryDAO = new CategoryDAO(connection);
+		
+		try {
+			existsCategory = categoryDAO.existsCategory(name);
+			if(existsCategory) {
+				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+				response.getWriter().println("A category with this name already exists!");
+				return;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 
 		if(fatherId == -1) { // The category is a root
 			try {

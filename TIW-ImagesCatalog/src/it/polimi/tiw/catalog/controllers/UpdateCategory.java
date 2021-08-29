@@ -79,26 +79,33 @@ public class UpdateCategory extends HttpServlet {
 	    
 	    CategoryDAO categoryDAO = new CategoryDAO(connection);
 	    
-	    String lastChildCode;
-		String fatherCode;
+	    String lastChildNewFatherCode;
+	    String lastChildOldFatherCode;
+		String newFatherCode;
 		
 		try {
-			lastChildCode = categoryDAO.findLastChildCode(Integer.parseInt(newFatherId));
-			fatherCode = categoryDAO.findCategoryCode(Integer.parseInt(newFatherId));
+			lastChildNewFatherCode = categoryDAO.findLastChildCode(Integer.parseInt(newFatherId));
+			lastChildOldFatherCode = categoryDAO.findLastChildCode(Integer.parseInt(oldFatherId));
+			newFatherCode = categoryDAO.findCategoryCode(Integer.parseInt(newFatherId));
 
-			int lastDigit = Character.getNumericValue(lastChildCode.charAt(lastChildCode.length()-1));
+			int lastDigit = Character.getNumericValue(lastChildNewFatherCode.charAt(lastChildNewFatherCode.length()-1));
 			if (lastDigit == MAX_CATEGORIES) {
 				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 				response.getWriter().println("The number of sub-categories cannot be more that 9");
 				return;
 			} else {
-				if (lastChildCode.equals("-1")) newCategoryCode = fatherCode + "1";
-				else if (lastChildCode.equals(fatherCode)) {
-					lastChildCode = categoryDAO.findLastChildCode(Integer.parseInt(categoryId));
-					lastDigit = Character.getNumericValue(lastChildCode.charAt(lastChildCode.length()-1));
-					newCategoryCode = oldCategoryCode.substring(0, oldCategoryCode.length()-1) + String.valueOf(lastDigit+1);
+				if (lastChildOldFatherCode.equals(newFatherCode)) {
+					if(lastChildNewFatherCode.equals("-1")) newCategoryCode = oldCategoryCode + "1";
+					else newCategoryCode = oldCategoryCode + String.valueOf(lastDigit+1);
 				}
-				else newCategoryCode = lastChildCode.substring(0, lastChildCode.length()-1) + String.valueOf(lastDigit+1);
+				else if (lastChildNewFatherCode.equals("-1")) newCategoryCode = newFatherCode + "1";
+//				else if (lastChildNewFatherCode.equals(fatherCode)) {
+//					lastChildNewFatherCode = categoryDAO.findLastChildCode(Integer.parseInt(categoryId));
+//					lastDigit = Character.getNumericValue(lastChildNewFatherCode.charAt(lastChildNewFatherCode.length()-1));
+//					newCategoryCode = oldCategoryCode.substring(0, oldCategoryCode.length()-1) + String.valueOf(lastDigit+1);
+//				}
+				
+				else newCategoryCode = lastChildNewFatherCode.substring(0, lastChildNewFatherCode.length()-1) + String.valueOf(lastDigit+1);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
