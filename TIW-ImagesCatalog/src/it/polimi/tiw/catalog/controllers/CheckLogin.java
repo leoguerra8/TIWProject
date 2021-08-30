@@ -57,14 +57,18 @@ public class CheckLogin extends HttpServlet {
 			throws ServletException, IOException {
 		String username = null;
 		String password = null;
-		String path = getServletContext().getContextPath();
+		String path = "/index.html";
+		ServletContext servletContext = getServletContext();
+		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
+		ctx.setVariable("isValid", true);
 		
 		// Get and escape request parameters
 		username = StringEscapeUtils.escapeJava(request.getParameter("username"));
 		password = StringEscapeUtils.escapeJava(request.getParameter("password"));
 		if (username == null || password == null || username.isEmpty() || password.isEmpty()) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			response.getWriter().println("Credentials must be not null");
+			ctx.setVariable("isValid", false);
+			ctx.setVariable("errorCode", 1);
 			return;
 		}
 		
@@ -82,14 +86,17 @@ public class CheckLogin extends HttpServlet {
 		// return an error status code and message
 		if (user == null) {
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-			response.getWriter().println("Incorrect credentials");
+			ctx.setVariable("isValid", false);
+			ctx.setVariable("errorCode", 2);
 		} else {
 			request.getSession().setAttribute("user", user);
 			response.setStatus(HttpServletResponse.SC_OK);
 			response.setCharacterEncoding("UTF-8");
 			response.getWriter().println(username);
-			response.sendRedirect(path + "/GoToHomePage");
+			response.sendRedirect("GoToHomePage");
 		}
+		
+		templateEngine.process(path, ctx, response.getWriter());
 	}
 
 	public void destroy() {

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <link rel="stylesheet" type="text/css" media="all"
-	href="./css/mystyle.css" th:href="@{/css/mystyle.css}"/>
+	href="./css/mystyle.css" th:href="@{/css/mystyle.css}" />
 <title>Login Page</title>
 </head>
 <body>
@@ -11,12 +11,18 @@
 	<div>
 		<div class="formbox">
 			<h1 th:text="#{PageTitle}">Login</h1>
+			<p class="error-msg" th:if="${isValid == false && errorCode == 1}"
+				th:text="#{ErrorMsgNull}"></p>
+			<p class="error-msg" th:if="${isValid == false && errorCode == 2}"
+				th:text="#{ErrorMsgIncorrect}"></p>
 			<form th:action="@{/CheckLogin}" method="POST" autocomplete="off">
 				<p>
-					<input type="text" name="username" th:placeholder="#{Username}" required>
+					<input type="text" name="username" th:placeholder="#{Username}"
+						required>
 				</p>
 				<p>
-					<input type="password" name="password" th:placeholder="#{Password}" required>
+					<input type="password" name="password" th:placeholder="#{Password}"
+						required>
 				</p>
 				<p>
 					<input type="submit" th:value="#{Login}">

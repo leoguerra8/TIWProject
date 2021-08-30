@@ -101,3 +101,8 @@ h1, h2 {
   width: 336px;
   position: relative;
 }
+
+.error-msg {
+	color: #a03636;
+	font-size: 14px;
+}
