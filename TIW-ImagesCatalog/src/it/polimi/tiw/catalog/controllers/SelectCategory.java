@@ -40,7 +40,7 @@ public class SelectCategory extends HttpServlet {
 		templateResolver.setCacheable(false);
 		this.templateEngine = new TemplateEngine();
 		this.templateEngine.setTemplateResolver(templateResolver);
-		this.templateEngine.setMessageResolver(new SharedPropertyMessageResolver(servletContext, "i18n", "select"));
+		this.templateEngine.setMessageResolver(new SharedPropertyMessageResolver(servletContext, "i18n", "home"));
 		templateResolver.setSuffix(".html");
 		connection = ConnectionHandler.getConnection(getServletContext());
 	}
