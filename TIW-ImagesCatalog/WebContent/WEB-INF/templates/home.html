@@ -22,16 +22,29 @@
 		<div class="column">
 			<div class="row" th:each="category : ${categories}">
 				<div class="column" id="left-column">
-					<p th:text="${category.indent() + ' ' + category.code + ' ' + category.name}">1 First</p>
+					<p
+						th:text="${category.indent() + ' ' + category.code + ' ' + category.name}"
+						th:style="${(onSelection == true && category.belongsTo(subtreeIndexes)) ? 'color:#ff1a1a' : 'color:#000000'}">1 First</p>
 				</div>
 				<div class="move-column" id="right-column">
-					<form th:action="@{/SelectCategory}" method="POST"
-						id="move-category-form">
-						<input type="hidden" name="categoryId" th:value="${category.id}">
+
+						<form th:if="${onSelection == false}"
+						th:action="@{/SelectCategory}" method="POST"
+						id="move-category-form"><input type="hidden" name="categoryId" th:value="${category.id}">
 						<input type="hidden" name="fatherId"
 							th:value="${category.fatherId}"> <input type="hidden"
 							name="categoryCode" th:value="${category.code}"> <input
-							type="submit" th:value="#{Move}" />
+							type="submit" th:value="#{Move}" /></form>
+					<form
+						th:unless="${(onSelection == false || category.belongsTo(subtreeIndexes)) || category.id == fatherId}"
+						th:action="@{/UpdateCategory}" method="POST"
+						id="move-category-form">
+						<input type="hidden" name="categoryId" th:value="${categoryId}">
+						<input type="hidden" name="oldFatherId" th:value="${fatherId}">
+						<input type="hidden" name="newFatherId" th:value="${category.id}">
+						<input type="hidden" name="oldCategoryCode"
+							th:value="${categoryCode}"> <input type="submit"
+							th:value="#{MoveHere}" />
 					</form>
 				</div>
 			</div>

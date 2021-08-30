@@ -93,7 +93,7 @@ public class SelectCategory extends HttpServlet {
 			return;
 	    }
 	    
-	    String path = "/WEB-INF/templates/update.html";
+	    String path = "/WEB-INF/templates/home.html";
 	   
 	    final WebContext ctx = new WebContext(request, response, getServletContext(), request.getLocale());
 	    ctx.setVariable("categories", categories);
@@ -101,6 +101,7 @@ public class SelectCategory extends HttpServlet {
 	    ctx.setVariable("fatherId", fatherId);
 	    ctx.setVariable("subtreeIndexes", subtreeIndexes);
 	    ctx.setVariable("categoryCode", categoryCode);
+	    ctx.setVariable("onSelection", true);
 	    response.setCharacterEncoding("UTF-8");
 	    templateEngine.process(path, ctx, response.getWriter());
 	}

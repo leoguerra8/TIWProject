@@ -3,6 +3,7 @@ package it.polimi.tiw.catalog.controllers;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletContext;
@@ -56,6 +57,8 @@ public class GoToHomePage extends HttpServlet {
 			String path = "/WEB-INF/templates/home.html";
 			final WebContext ctx = new WebContext(request, response, getServletContext(), request.getLocale());
 			ctx.setVariable("categories", categories);
+			ctx.setVariable("onSelection", false);
+			ctx.setVariable("subtreeIndexes", new ArrayList<Integer>());
 			templateEngine.process(path, ctx, response.getWriter());
 		} catch (SQLException e) {
 			e.printStackTrace();
