@@ -22,7 +22,7 @@
 		<div class="column">
 			<div class="row" th:each="category : ${categories}">
 				<div class="column" id="left-column">
-					<p th:text="${category.code + ' ' + category.name}">1 First</p>
+					<p th:text="${category.indent() + ' ' + category.code + ' ' + category.name}">1 First</p>
 				</div>
 				<div class="move-column" id="right-column">
 					<form th:action="@{/SelectCategory}" method="POST"

@@ -39,4 +39,11 @@ public class Category {
 		return subtreeIndexes.contains(this.id);
 	}
 
+	public String indent() {
+		String indent = "";
+		for(int i = 0; i < this.code.length()-1; i++) {
+			indent += ">";
+		}
+		return indent;
+	}
 }
