@@ -91,7 +91,7 @@ public class CheckLogin extends HttpServlet {
 		} else {
 			request.getSession().setAttribute("user", user);
 			response.setStatus(HttpServletResponse.SC_OK);
-			response.setCharacterEncoding("UTF-8");
+			response.setCharacterEncoding("ISO-8859-1");
 			response.getWriter().println(username);
 			response.sendRedirect("GoToHomePage");
 		}

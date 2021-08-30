@@ -119,7 +119,7 @@ public class UpdateCategory extends HttpServlet {
 			return;
 	    }
 	    
-	    String path = "/WEB-INF/templates/update.html";
+	    String path = "/WEB-INF/templates/home.html";
 
 	    response.sendRedirect("GoToHomePage");
 	}

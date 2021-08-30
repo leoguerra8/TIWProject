@@ -63,7 +63,7 @@ public class GoToHomePage extends HttpServlet {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			response.sendError(500, "Database access failed: GET GoToHomePage");
-			response.setCharacterEncoding("UTF-8");
+			response.setCharacterEncoding("ISO-8859-1");
 		}
 
 	}

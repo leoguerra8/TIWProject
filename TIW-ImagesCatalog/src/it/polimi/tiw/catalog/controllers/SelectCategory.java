@@ -102,7 +102,7 @@ public class SelectCategory extends HttpServlet {
 	    ctx.setVariable("subtreeIndexes", subtreeIndexes);
 	    ctx.setVariable("categoryCode", categoryCode);
 	    ctx.setVariable("onSelection", true);
-	    response.setCharacterEncoding("UTF-8");
+	    response.setCharacterEncoding("ISO-8859-1");
 	    templateEngine.process(path, ctx, response.getWriter());
 	}
 	
