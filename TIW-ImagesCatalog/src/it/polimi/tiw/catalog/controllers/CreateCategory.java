@@ -35,7 +35,6 @@ public class CreateCategory extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) 
 			throws ServletException, IOException {
-		boolean isBadRequest = false;
 		String name = null;
 		Integer fatherId = null;
 		String code = null;
