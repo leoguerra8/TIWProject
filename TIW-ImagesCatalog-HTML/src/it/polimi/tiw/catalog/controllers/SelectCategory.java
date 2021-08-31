@@ -40,7 +40,7 @@ public class SelectCategory extends HttpServlet {
 		templateResolver.setCacheable(false);
 		this.templateEngine = new TemplateEngine();
 		this.templateEngine.setTemplateResolver(templateResolver);
-		this.templateEngine.setMessageResolver(new SharedPropertyMessageResolver(servletContext, "i18n", "select"));
+		this.templateEngine.setMessageResolver(new SharedPropertyMessageResolver(servletContext, "i18n", "home"));
 		templateResolver.setSuffix(".html");
 		connection = ConnectionHandler.getConnection(getServletContext());
 	}
@@ -102,7 +102,7 @@ public class SelectCategory extends HttpServlet {
 	    ctx.setVariable("subtreeIndexes", subtreeIndexes);
 	    ctx.setVariable("categoryCode", categoryCode);
 	    ctx.setVariable("onSelection", true);
-	    response.setCharacterEncoding("UTF-8");
+	    response.setCharacterEncoding("ISO-8859-1");
 	    templateEngine.process(path, ctx, response.getWriter());
 	}
 	

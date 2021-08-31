@@ -20,7 +20,7 @@ public class Logout extends HttpServlet {
 
 		request.getSession().invalidate();
 		response.sendRedirect(getServletContext().getContextPath() + "/CheckLogin");
-		response.setCharacterEncoding("UTF-8");
+		response.setCharacterEncoding("ISO-8859-1");
 
 	}
 
