@@ -94,6 +94,7 @@ public class UpdateCategory extends HttpServlet {
 					if(lastChildNewFatherCode.equals("-1")) newCategoryCode = oldCategoryCode + "1";
 					else newCategoryCode = oldCategoryCode + String.valueOf(lastDigit+1);
 				}
+				if (lastChildNewFatherCode.equals("-1")) newCategoryCode = newFatherCode + "1";
 				else newCategoryCode = lastChildNewFatherCode.substring(0, lastChildNewFatherCode.length()-1) + String.valueOf(lastDigit+1);
 			}
 		} catch (SQLException e) {
