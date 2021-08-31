@@ -3,8 +3,6 @@ package it.polimi.tiw.catalog.controllers;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -14,11 +12,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
-import it.polimi.tiw.catalog.beans.Category;
 import it.polimi.tiw.catalog.dao.CategoryDAO;
 import it.polimi.tiw.catalog.utils.ConnectionHandler;
 
@@ -98,13 +94,6 @@ public class UpdateCategory extends HttpServlet {
 					if(lastChildNewFatherCode.equals("-1")) newCategoryCode = oldCategoryCode + "1";
 					else newCategoryCode = oldCategoryCode + String.valueOf(lastDigit+1);
 				}
-				else if (lastChildNewFatherCode.equals("-1")) newCategoryCode = newFatherCode + "1";
-//				else if (lastChildNewFatherCode.equals(fatherCode)) {
-//					lastChildNewFatherCode = categoryDAO.findLastChildCode(Integer.parseInt(categoryId));
-//					lastDigit = Character.getNumericValue(lastChildNewFatherCode.charAt(lastChildNewFatherCode.length()-1));
-//					newCategoryCode = oldCategoryCode.substring(0, oldCategoryCode.length()-1) + String.valueOf(lastDigit+1);
-//				}
-				
 				else newCategoryCode = lastChildNewFatherCode.substring(0, lastChildNewFatherCode.length()-1) + String.valueOf(lastDigit+1);
 			}
 		} catch (SQLException e) {
@@ -119,8 +108,6 @@ public class UpdateCategory extends HttpServlet {
 			return;
 	    }
 	    
-	    String path = "/WEB-INF/templates/update.html";
-
 	    response.sendRedirect("GoToHomePage");
 	}
 	
