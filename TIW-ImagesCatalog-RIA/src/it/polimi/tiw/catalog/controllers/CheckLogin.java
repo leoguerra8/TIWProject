@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringEscapeUtils;
 
+import com.google.gson.Gson;
+
 import it.polimi.tiw.catalog.dao.UserDAO;
 import it.polimi.tiw.catalog.utils.ConnectionHandler;
 import it.polimi.tiw.catalog.beans.User;
@@ -59,11 +61,13 @@ public class CheckLogin extends HttpServlet {
 			response.getWriter().println("Incorrect credentials");
 
 		} else {
+			Gson gson = new Gson();
+			String json = gson.toJson(user);
 			request.getSession().setAttribute("user", user);
 			response.setStatus(HttpServletResponse.SC_OK);
 			response.setContentType("application/json");
 			response.setCharacterEncoding("UTF-8");
-			response.getWriter().println(username);
+			response.getWriter().println(json);
 
 		}
 	}

@@ -16,10 +16,11 @@
 	}
 
 	// Constructors of view components
-	function PersonalMessage(_username, messagecontainer) {
-		this.username = _username;
+	function PersonalMessage(_name, _surname, messagecontainer) {
+		this.name = _name;
+		this.surname = _surname;
 		this.show = function() {
-			messagecontainer.textContent = "Utente corrente: " + this.username;
+			messagecontainer.textContent = "Utente corrente: " + this.name + " " + this.surname;
 		}
 	}
 
@@ -156,9 +157,10 @@
 
 	function PageOrchestrator() {
 		var alertContainer = document.getElementById("id_alert");
+		var formAlertContainer = document.getElementById("id_formalert");
 
 		this.start = function() {
-			personalMessage = new PersonalMessage(sessionStorage.getItem("username"),
+			personalMessage = new PersonalMessage(sessionStorage.getItem("name"), sessionStorage.getItem("surname"),
 				document.getElementById("id_user"));
 			personalMessage.show();
 
@@ -168,7 +170,7 @@
 				document.getElementById("id_listcontainerbody"));
 
 			categoryForm = new CategoryForm(document.getElementById("id_form"),
-			document.getElementById("id_father"), alertContainer);
+			document.getElementById("id_father"), formAlertContainer);
 			categoryForm.registerEvents(this);
 
 			document.querySelector("a[href='Logout']").addEventListener('click', () => {
