@@ -37,6 +37,15 @@ h1, h2 {
 	text-align: center;
 }
 
+a {
+	text-decoration: none;
+	color: black;
+}
+
+tr.spaceUnder>td {
+  padding-bottom: 1em;
+}
+
 .column {
 	margin-right: 50px;
 	display: inline-block;

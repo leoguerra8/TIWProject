@@ -1,1 +1,49 @@
-<p>Hello World!</p>
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<link rel="stylesheet" type="text/css" media="all" href="./css/mystyle.css" />
+<script src="home.js" charset="UTF-8" defer></script>
+<script src="utils.js" charset="UTF-8" defer></script>
+<title>Images Catalog Home Page</title>
+</head>
+
+<body>
+	<div>
+		<ul class="header">
+			<li><a class="logout-button" href="Logout">Logout</a></li>
+			<li><b><p class="user-header" id="id_user"></p></b></li>
+		</ul>
+	</div>
+	<div id="id_alert" class="error-msg"></div>
+	
+	<h1>Catalogo Immagini</h1>
+	<hr>
+	
+	<div class="container">
+		<div class="column">
+			<table id="id_listcontainer">
+				<thead></thead>
+				<tbody id="id_listcontainerbody"></tbody>
+			</table>
+		</div>
+		
+		<div class="column formbox">
+			<h1>Crea una nuova categoria</h1>
+			<div class="error-msg" id="error-msg"></div>
+			<form action="#" autocomplete="off" id="id_form">
+				<p>
+					<input type="text" id="id_name" name="name" required>
+				</p>
+				<p>
+					<label>Scegli un nuovo padre</label>
+					<select id="id_father" name="fatherId"></select>
+				</p>
+				<p>
+					<input type="button" value="submit" class="submit" name="submit">
+				</p>
+			</form>
+		</div>
+	</div>
+</body>
+</html>

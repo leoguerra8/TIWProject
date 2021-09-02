@@ -21,7 +21,7 @@
 
                         case 200: //OK
                             
-                            sessionStorage.setItem('user', message);
+                            sessionStorage.setItem('username', message);
                             window.location.href = "home.html";
                             break;
 
