@@ -42,7 +42,7 @@ a {
 	color: black;
 }
 
-tr.spaceUnder>td {
+td {
   padding-bottom: 1em;
 }
 
@@ -114,4 +114,12 @@ tr.spaceUnder>td {
 .error-msg {
 	color: #a03636;
 	font-size: 14px;
+}
+
+.selected {
+	color: #ff1a1a;
+}
+
+.not-selected {
+	color: black;
 }
