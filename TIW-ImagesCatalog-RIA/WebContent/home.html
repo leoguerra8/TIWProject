@@ -20,6 +20,10 @@
 	<h1>Catalogo Immagini</h1>
 	<hr>
 	
+	<div class="container" id="saveBtnCol">
+		<button id="id_savebtn">Salva</button>
+	</div>
+	
 	<div class="container">
 		<div class="column">
 			<table id="id_listcontainer">
@@ -40,10 +44,21 @@
 					<select id="id_father" name="fatherId"></select>
 				</p>
 				<p>
-					<input type="button" value="submit" class="submit" name="submit">
+					<input type="button" value="Crea" class="submit" name="submit">
 				</p>
 			</form>
 		</div>
 	</div>
+	<div id="id_modal" class="modal">
+
+  	<!-- Modal content -->
+  	<div class="modal-content" id="id_modal">
+    	<span class="close">&times;</span>
+    	<p id="id_modaltext">Vuoi confermare le modifiche?</p>
+    	<button type="button" id="id_cancelbtn">Cancella</button>
+    	<button type="button" class="confirm-btn" id="id_confirmbtn">Conferma</button>
+  	</div>
+
+</div>
 </body>
 </html>

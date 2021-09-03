@@ -1,7 +1,6 @@
 package it.polimi.tiw.catalog.beans;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Category {
 	

@@ -1,9 +1,10 @@
 (function() {
-	let categoriesList, categoryForm, pageOrchestrator = new PageOrchestrator(); // main controller
-	let startElement;
+	let categoriesList, categoryForm, updateModal, pageOrchestrator = new PageOrchestrator(); // main controller
+	let startElement, dest;
 	let updateQueue = [];
 	let allCategories = [];
 	const MAX_CATEGORIES = 9;
+	let closeEvent, cancelEvent, confirmEvent;
 
 	window.addEventListener("load", () => {
 		if (sessionStorage.getItem("username") == null) {
@@ -39,24 +40,17 @@
 	}
 
 	function dropHandler(event) {
-		var dest = event.target.closest("tr");
+		dest = event.target.closest("tr");
 		var catId = startElement.getAttribute("categoryId");
 		var oldCatCode = startElement.getAttribute("categoryCode");
 		var oldFatId = startElement.getAttribute("fatherId");
 		var newFatId = dest.getAttribute("categoryId");
 		var newFatCode = dest.getAttribute("categoryCode");
+		
 		var isAllowed = true;
 		if (newFatId == oldFatId || belongsToSubtree(oldCatCode, newFatCode) || newFatId == catId) { isAllowed = false; }
 		if (isAllowed) {
-		updateQueue.push({
-			categoryId: catId,
-			oldCategoryCode: oldCatCode,
-			oldFatherId: oldFatId,
-			newFatherId: newFatId,
-			newFatherCode: newFatCode
-		});
-		moveAndUpdate(parseInt(catId), oldCatCode, newFatCode, parseInt(oldFatId), parseInt(newFatId));
-		categoriesList.update(allCategories.sort(function(c1, c2) { return (c1.code).localeCompare(c2.code) }));
+			updateModal.show();
 		} else {
 			dest.className = "not-selected";
 		}
@@ -116,10 +110,61 @@
 		}
 	}
 
-	function CategoriesList(_alert, _listcontainer, _listcontainerbody) {
+	function UpdateModal(_modal, _cancel, _confirm) {
+		this.modal = _modal;
+		this.cancel = _cancel;
+		this.confirm = _confirm; 
+
+		this.modal.querySelector("span").addEventListener('click', () => { this.close(); } );
+		this.cancel.addEventListener('click', () => { this.close(); });
+		this.confirm.addEventListener('click', () => { this.confirm(); });
+
+		this.show = function() {
+			this.modal.style.display = "block"; 
+			dest.className = "not-selected";
+		}
+
+		this.close = function() {
+			this.modal.style.display = "none";
+			dest.className = "not-selected";
+		}
+
+		this.confirm = function() {
+			if (startElement && dest) {
+				var catId = startElement.getAttribute("categoryId");
+				var oldCatCode = startElement.getAttribute("categoryCode");
+				var oldFatId = startElement.getAttribute("fatherId");
+				var newFatId = dest.getAttribute("categoryId");
+				var newFatCode = dest.getAttribute("categoryCode");
+				var isAllowed = true;
+				if (newFatId == oldFatId || belongsToSubtree(oldCatCode, newFatCode) || newFatId == catId) { isAllowed = false; }
+				if (isAllowed) {
+					updateQueue.push({
+					categoryId: catId,
+					oldCategoryCode: oldCatCode,
+					oldFatherId: oldFatId,
+					newFatherId: newFatId,
+					newFatherCode: newFatCode
+					});
+					moveAndUpdate(parseInt(catId), oldCatCode, newFatCode, parseInt(oldFatId), parseInt(newFatId));
+					categoriesList.update(allCategories.sort(function(c1, c2) { return (c1.code).localeCompare(c2.code) }));
+				}
+			} else {
+				this.close();
+			}
+			this.close();
+		}
+
+		this.reset = function() {
+			this.modal.style.display = "none";
+		}
+	}
+
+	function CategoriesList(_alert, _listcontainer, _listcontainerbody, _savebtn) {
 		this.alert = _alert;
 		this.listcontainer = _listcontainer;
 		this.listcontainerbody = _listcontainerbody;
+		this.savebtn = _savebtn;
 
 		this.reset = function() {
 			this.listcontainer.style.visibility = "hidden";
@@ -147,6 +192,29 @@
 						}
 					}
 				});
+		}
+
+		this.registerEvents = function(orchestrator) {
+			this.savebtn.addEventListener('click', (e) => {
+				if (updateQueue.length != 0) {
+					var self = this;
+					makeCallJson("POST", 'UpdateCategories', updateQueue,
+					function(req) {
+						if (req.readyState == XMLHttpRequest.DONE) {
+							var message = req.responseText;
+							if (req.status == 200) {
+								orchestrator.refresh();
+							} else if (req.status == 403) {
+								window.location.href = req.getResponseHeader("Location");
+								window.sessionStorage.removeItem("username");
+							} else {
+								self.alert.textContent = message;
+								self.reset();
+							}
+						}
+					});
+				}
+			})
 		}
 
 		this.update = function(arrayCategories) {
@@ -251,6 +319,10 @@
 		var formAlertContainer = document.getElementById("id_formalert");
 
 		this.start = function() {
+			closeEvent = new Event ("close");
+			cancelEvent = new Event ("cancel");
+			confirmEvent = new Event ("confirm");
+
 			personalMessage = new PersonalMessage(sessionStorage.getItem("name"), sessionStorage.getItem("surname"),
 				document.getElementById("id_user"));
 			personalMessage.show();
@@ -258,7 +330,9 @@
 			categoriesList = new CategoriesList(
 				alertContainer,
 				document.getElementById("id_listcontainer"),
-				document.getElementById("id_listcontainerbody"));
+				document.getElementById("id_listcontainerbody"),
+				document.getElementById("id_savebtn"));
+			categoriesList.registerEvents(this);
 
 			categoryForm = new CategoryForm(document.getElementById("id_form"),
 			document.getElementById("id_father"), formAlertContainer);
@@ -267,6 +341,9 @@
 			document.querySelector("a[href='Logout']").addEventListener('click', () => {
 				window.sessionStorage.removeItem("username");
 			});
+
+			updateModal = new UpdateModal(document.getElementById("id_modal"),
+			document.getElementById("id_cancelbtn"), document.getElementById("id_confirmbtn"));
 		}
 		
 		this.refresh = function() {
@@ -275,6 +352,10 @@
 			categoryForm.reset();
 			categoriesList.show();
 			categoryForm.show();
+			updateModal.reset();
+			startElement = undefined;
+			dest = undefined;
+			updateQueue = [];
 		}
 	}
 })();

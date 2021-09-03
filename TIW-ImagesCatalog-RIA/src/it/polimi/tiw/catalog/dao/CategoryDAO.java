@@ -10,10 +10,14 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
+
 import it.polimi.tiw.catalog.beans.Category;
+import it.polimi.tiw.catalog.beans.CategoryUpdate;
 
 public class CategoryDAO {
 	private Connection connection;
+	final int MAX_CATEGORIES = 9;
 
 	public CategoryDAO(Connection c) {
 		this.connection = c;
@@ -144,6 +148,97 @@ public class CategoryDAO {
 		}
 	}
 
+	public String updateCategories(ArrayList<CategoryUpdate> categoryUpdateArray) throws SQLException {
+		connection.setAutoCommit(false);
+		try {
+			for(CategoryUpdate category : categoryUpdateArray) {
+				String lastChildNewFatherCode;
+				String lastChildOldFatherCode;
+				String newCategoryCode;
+				String newFatherCode = category.getNewFatherCode();
+				String oldCategoryCode = category.getOldCategoryCode();
+				int newFatherId = category.getNewFatherId();
+				int oldFatherId = category.getOldFatherId();
+
+				try {
+					lastChildNewFatherCode = this.findLastChildCode(newFatherId);
+					lastChildOldFatherCode = this.findLastChildCode(oldFatherId);
+
+					int lastDigit = Character.getNumericValue(lastChildNewFatherCode.charAt(lastChildNewFatherCode.length()-1));
+					if (lastDigit == MAX_CATEGORIES) {
+						return "The number of sub-categories cannot be more that 9";
+					} else {
+						if (lastChildOldFatherCode.equals(newFatherCode)) {
+							if(lastChildNewFatherCode.equals("-1")) newCategoryCode = oldCategoryCode + "1";
+							else newCategoryCode = oldCategoryCode + String.valueOf(lastDigit+1);
+						}
+						if (lastChildNewFatherCode.equals("-1")) newCategoryCode = newFatherCode + "1";
+						else newCategoryCode = lastChildNewFatherCode.substring(0, lastChildNewFatherCode.length()-1) + String.valueOf(lastDigit+1);
+					}
+				} catch (SQLException e) {
+					e.printStackTrace();
+					return "Something went wrong during the update";
+				}
+				String update1 = "UPDATE categories SET code = ?, father = ? WHERE id = ?";
+				String update2 = "UPDATE categories SET code = ? WHERE code = ?";
+				String query = "SELECT code FROM categories WHERE code LIKE CONCAT(?, '%', '') AND code != ?";
+
+				connection.setAutoCommit(false);
+				PreparedStatement pStatement1 = connection.prepareStatement(update1);
+				PreparedStatement pStatement2 = connection.prepareStatement(query);
+				pStatement1.setString(1, newCategoryCode);
+				pStatement1.setInt(2, newFatherId);
+				pStatement1.setInt(3, category.getCategoryId());
+				pStatement2.setString(1, oldCategoryCode);
+				pStatement2.setString(2, newCategoryCode);
+				pStatement1.executeUpdate();
+				ResultSet res1 = pStatement2.executeQuery();
+				while (res1.next()) {
+					String oldChildCode = res1.getString("code");
+					PreparedStatement pStatement5 = connection.prepareStatement(update2);
+					String newChildCode = newCategoryCode + oldChildCode.substring(oldCategoryCode.length());
+					pStatement5.setString(1, newChildCode);
+					pStatement5.setString(2, oldChildCode);
+					pStatement5.executeUpdate();
+				}
+				String lastBrotherCode = this.findLastChildCode(oldFatherId);
+				if (!lastBrotherCode.equals("-1") && lastBrotherCode.compareTo(oldCategoryCode) > 0) {
+					PreparedStatement pStatement3 = connection.prepareStatement(update2);
+					PreparedStatement pStatement4 = connection.prepareStatement(query);
+					pStatement3.setString(1, oldCategoryCode);
+					pStatement3.setString(2, lastBrotherCode);
+					pStatement4.setString(1, lastBrotherCode);
+					pStatement4.setString(2, newCategoryCode);
+					pStatement3.executeUpdate();
+					ResultSet res2 = pStatement4.executeQuery();
+					while (res2.next()) {
+						String oldChildCode = res2.getString("code");
+						PreparedStatement pStatement6 = connection.prepareStatement(update2);
+						String newChildCode = oldCategoryCode + oldChildCode.substring(lastBrotherCode.length());
+						pStatement6.setString(1, newChildCode);
+						pStatement6.setString(2, oldChildCode);
+						pStatement6.executeUpdate();
+					}
+				}
+			}
+			connection.commit();
+			return "OK";
+		}
+		catch (SQLException e) {
+			if (connection != null) {
+				try {
+					System.err.print("Transaction is being rolled back");
+					connection.rollback();
+					return "Something went wrong during the update";
+				} catch (SQLException ex) {
+					ex.printStackTrace();
+					return "Something went wrong during the rollback";
+				}
+			}
+		}
+		return null;
+	}
+
 	public void updateCategory(int categoryId, int oldFatherId, int newFatherId, String oldCategoryCode, String newCategoryCode) throws SQLException {
 		String update1 = "UPDATE categories SET code = ?, father = ? WHERE id = ?";
 		String update2 = "UPDATE categories SET code = ? WHERE code = ?";
@@ -198,7 +293,7 @@ public class CategoryDAO {
 			}
 		}
 	}
-	
+
 	public boolean existsCategory(String name) throws SQLException {
 		String query = "SELECT * FROM categories WHERE name = ?";
 		try(PreparedStatement pStatement = connection.prepareStatement(query);) {	
