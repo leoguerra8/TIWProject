@@ -110,10 +110,11 @@
 		}
 	}
 
-	function UpdateModal(_modal, _cancel, _confirm) {
+	function UpdateModal(_modal, _cancel, _confirm, _savebtn) {
 		this.modal = _modal;
 		this.cancel = _cancel;
 		this.confirm = _confirm; 
+		this.savebtn = _savebtn;
 
 		this.modal.querySelector("span").addEventListener('click', () => { this.close(); } );
 		this.cancel.addEventListener('click', () => { this.close(); });
@@ -122,6 +123,7 @@
 		this.show = function() {
 			this.modal.style.display = "block"; 
 			dest.className = "not-selected";
+			this.savebtn.style.display = "none";
 		}
 
 		this.close = function() {
@@ -149,6 +151,8 @@
 					moveAndUpdate(parseInt(catId), oldCatCode, newFatCode, parseInt(oldFatId), parseInt(newFatId));
 					categoriesList.update(allCategories.sort(function(c1, c2) { return (c1.code).localeCompare(c2.code) }));
 				}
+				this.savebtn.style.display = "inline-block";
+				categoryForm.disable();
 			} else {
 				this.close();
 			}
@@ -168,6 +172,7 @@
 
 		this.reset = function() {
 			this.listcontainer.style.visibility = "hidden";
+			this.savebtn.style.display = "none";
 		}
 		
 		this.show = function() {
@@ -252,6 +257,19 @@
 		this.reset = function() {
 			this.form.reset();
 			this.selector.visibility = "hidden";
+			this.enable();
+		}
+
+		this.disable = function() {
+			this.form.querySelector("input[type='button'].submit").disable = true;
+			this.form.querySelector("input[type='text']").disable = true;
+			this.form.querySelector("select").disable = true;
+		}
+
+		this.enable = function() {
+			this.form.querySelector("input[type='button'].submit").disable = false;
+			this.form.querySelector("input[type='text']").disable = false;
+			this.form.querySelector("select").disable = false;
 		}
 
 		this.registerEvents = function(orchestrator) {
@@ -294,6 +312,7 @@
 						}
 					}
 				});
+			this.enable();
 		}
 
 		this.update = function(arrayCategories) {
@@ -343,7 +362,8 @@
 			});
 
 			updateModal = new UpdateModal(document.getElementById("id_modal"),
-			document.getElementById("id_cancelbtn"), document.getElementById("id_confirmbtn"));
+			document.getElementById("id_cancelbtn"), document.getElementById("id_confirmbtn"),
+			document.getElementById("id_savebtn"));
 		}
 		
 		this.refresh = function() {
