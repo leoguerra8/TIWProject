@@ -261,15 +261,15 @@
 		}
 
 		this.disable = function() {
-			this.form.querySelector("input[type='button'].submit").disable = true;
-			this.form.querySelector("input[type='text']").disable = true;
-			this.form.querySelector("select").disable = true;
+			this.form.querySelector("input[type='button'].submit").setAttribute("disabled", "true");
+			this.form.querySelector("input[type='text']").setAttribute("disabled", "true");
+			this.form.querySelector("select").setAttribute("disabled", "true");
 		}
 
 		this.enable = function() {
-			this.form.querySelector("input[type='button'].submit").disable = false;
-			this.form.querySelector("input[type='text']").disable = false;
-			this.form.querySelector("select").disable = false;
+			this.form.querySelector("input[type='button'].submit").removeAttribute("disabled");
+			this.form.querySelector("input[type='text']").removeAttribute("disabled");
+			this.form.querySelector("select").removeAttribute("disabled");
 		}
 
 		this.registerEvents = function(orchestrator) {
