@@ -30,7 +30,8 @@
   <filter-mapping>
     <filter-name>LoginChecker</filter-name>
     <url-pattern>/CreateCategory</url-pattern>
-    <url-pattern>/GoToHomePage</url-pattern>
+    <url-pattern>/GetCategories</url-pattern>
     <url-pattern>/Logout</url-pattern>
+    <url-pattern>/UpdateCategories</url-pattern>
   </filter-mapping>
 </web-app>
