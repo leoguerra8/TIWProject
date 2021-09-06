@@ -33,7 +33,7 @@ CREATE TABLE `categories` (
   UNIQUE KEY `code_UNIQUE` (`code`),
   KEY `father` (`father`),
   CONSTRAINT `categories_ibfk_1` FOREIGN KEY (`father`) REFERENCES `categories` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -42,7 +42,7 @@ CREATE TABLE `categories` (
 
 LOCK TABLES `categories` WRITE;
 /*!40000 ALTER TABLE `categories` DISABLE KEYS */;
-INSERT INTO `categories` VALUES (1,'Archeologia','1',NULL),(2,'Dinosauri','11',1),(3,'Saurischi','111',2),(4,'Ornitorischi','112',2),(5,'Tirannosauro','1111',3),(6,'Spinosauro','1112',3),(7,'Triceratopo','1121',4),(8,'Stegosauro','1122',4),(9,'Informatica','2',NULL),(10,'Linguaggi di programmazione','21',9),(11,'C','2111',20),(12,'Java','2121',19),(13,'Scienze','3',NULL),(14,'Fisica','31',13),(15,'Chimica','32',13),(16,'Biologia','33',13),(17,'Meteoriti','113',2),(19,'Lunguaggi a oggetti','212',10),(20,'Linguaggi funzionali','211',10);
+INSERT INTO `categories` VALUES (1,'Archeologia','1',NULL),(2,'Dinosauri','11',1),(3,'Saurischi','111',2),(4,'Ornitorischi','112',2),(5,'Tirannosauro','1111',3),(6,'Spinosauro','1112',3),(7,'Triceratopo','1121',4),(8,'Stegosauro','1122',4),(9,'Informatica','2',NULL),(10,'Linguaggi di programmazione','21',9),(11,'C','2121',20),(12,'Java','2111',19),(13,'Scienze','3',NULL),(14,'Fisica','31',13),(15,'Chimica','32',13),(16,'Biologia','33',13),(17,'Meteoriti','12',2),(19,'Lunguaggi a oggetti','211',10),(20,'Linguaggi funzionali','212',10),(41,'Fisica quantistica','312',14),(42,'Fisica classica','311',14),(43,'Chimica organica','321',15),(44,'Scienze umane','34',13);
 /*!40000 ALTER TABLE `categories` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -62,7 +62,7 @@ CREATE TABLE `users` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`),
   UNIQUE KEY `id_UNIQUE` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -71,7 +71,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'username1','password1','Tony','Stark'),(2,'username2','password2','Matthew','Bellamy'),(3,'1','1','Nome','Cognome'),(4,'username4','password4','Giovanni','Mucciaccia'),(5,'username5','password5','Anakin','Skywalker');
+INSERT INTO `users` VALUES (1,'username1','password1','Tony','Stark'),(2,'username2','password2','Matthew','Bellamy'),(3,'username3','password3','Leonardo','DiCaprio'),(4,'username4','password4','Giovanni','Mucciaccia'),(5,'username5','password5','Anakin','Skywalker'),(6,'1','1','Simple','User');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -84,4 +84,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-08-29 12:59:00
+-- Dump completed on 2021-09-06 18:52:48
