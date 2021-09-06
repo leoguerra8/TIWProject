@@ -5,7 +5,6 @@
 	let allCategories = [];
 	const MAX_CATEGORIES = 9;
 	let updated = new Boolean(false);
-	let localMove = new Boolean(false);
 
 	window.addEventListener("load", () => {
 		if (sessionStorage.getItem("username") == null) {
@@ -112,6 +111,25 @@
 		}
 	}
 
+	function AfterUpdateModal(_modal) {
+		this.modal = _modal;
+
+		this.modal.querySelector("span").addEventListener('click', () => { this.close(); } );
+		this.modal.querySelector("button").addEventListener('click', () => { this.close(); } );
+
+		this.show = function() {
+			this.modal.style.display = "block";
+		}
+
+		this.close = function() {
+			this.modal.style.display = "none";
+		}
+
+		this.reset = function() {
+			this.modal.style.display = "none";
+		}
+	}
+
 	function UpdateModal(_modal, _cancel, _confirm, _savebtn) {
 		this.modal = _modal;
 		this.cancel = _cancel;
@@ -125,7 +143,6 @@
 		this.show = function() {
 			this.modal.style.display = "block"; 
 			dest.className = "not-selected";
-			this.savebtn.style.display = "none";
 		}
 
 		this.close = function() {
@@ -154,7 +171,6 @@
 					categoriesList.update(allCategories.sort(function(c1, c2) { return (c1.code).localeCompare(c2.code) }));
 				}
 				this.savebtn.style.display = "inline-block";
-				localMove = true;
 				categoryForm.disable();
 			} else {
 				this.close();
@@ -188,7 +204,7 @@
 							var categories = JSON.parse(req.responseText);
 							allCategories = [...categories];
 							if (categories.length == 0) {
-								self.alert.textContent = "No categories yet!";
+								self.alert.textContent = "Nessuna categoria";
 								return;
 							}
 							self.update(categories);
@@ -212,9 +228,8 @@
 							var message = req.responseText;
 							if (req.status == 200) {
 								updated = true;
-								localMove = false;
 								orchestrator.refresh();
-								alert("ABC");
+								afterUpdateModal.show();
 							} else if (req.status == 403) {
 								window.location.href = req.getResponseHeader("Location");
 								window.sessionStorage.removeItem("username");
@@ -282,7 +297,7 @@
 			this.form.querySelector("input[type='button'].submit").addEventListener('click', (e) => {
 				if (this.form.checkValidity()) {
 					var self = this;
-					if(localMove = false){
+					if (updateQueue.length == 0) {
 						makeCall("POST", 'CreateCategory', e.target.closest("form"),
 						function(req) {
 							if (req.readyState == XMLHttpRequest.DONE) {
@@ -299,7 +314,7 @@
 							}
 						});
 					} else {
-						alert("Non puoi aggiungere una nuova categoria se hai modifiche non salvate!");
+						window.alert("Non puoi aggiungere una categoria prima di aver salvato le modifiche");
 					}
 				}
 			})
@@ -374,6 +389,8 @@
 			updateModal = new UpdateModal(document.getElementById("id_modal"),
 			document.getElementById("id_cancelbtn"), document.getElementById("id_confirmbtn"),
 			document.getElementById("id_savebtn"));
+
+			afterUpdateModal = new AfterUpdateModal(document.getElementById("id_afterupdatemodal"));
 		}
 		
 		this.refresh = function() {
@@ -382,13 +399,10 @@
 			categoriesList.show();
 			categoryForm.show();
 			updateModal.reset();
+			afterUpdateModal.reset();
 			startElement = undefined;
 			dest = undefined;
 			updateQueue = [];
-			if(updated == true){
-				updated = false;
-				alert("La lista delle categorie è stata aggiornata correttamente!");
-			}
 		}
 	}
 })();
