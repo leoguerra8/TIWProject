@@ -86,6 +86,7 @@ h1, h2 {
 
 .container {
 	text-align: center;
+	margin-top: 50px;
 }
 
 #left-column {
@@ -100,6 +101,14 @@ h1, h2 {
   padding: 10px;
   width: 336px;
   position: relative;
+}
+
+#moveSubmit:hover {
+	background-color: #808080;
+}
+
+#moveHereSubmit:hover {
+	background-color: #808080;
 }
 
 .error-msg {

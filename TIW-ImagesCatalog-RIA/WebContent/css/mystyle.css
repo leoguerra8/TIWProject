@@ -47,7 +47,7 @@ td {
 }
 
 .column {
-	margin-right: 50px;
+	margin-right: 100px;
 	display: inline-block;
 	text-align: left;
 }
@@ -119,6 +119,10 @@ td {
 .error-msg {
 	color: #a03636;
 	font-size: 14px;
+}
+
+tbody td:hover {
+	color: #0000ff;
 }
 
 .selected {

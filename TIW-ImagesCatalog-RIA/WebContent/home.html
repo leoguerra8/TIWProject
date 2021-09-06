@@ -12,12 +12,12 @@
 	<div>
 		<ul class="header">
 			<li><a class="logout-button" href="Logout">Logout</a></li>
-			<li><b><p class="user-header" id="id_user"></p></b></li>
+			<li><b><a class="user-header" id="id_user"></a></b></li>
 		</ul>
 	</div>
 	<div id="id_alert" class="error-msg"></div>
 	
-	<h1>Catalogo Immagini</h1>
+	<h1>Catalogo di immagini</h1>
 	<hr>
 	
 	<div class="container" id="saveBtnCol">
@@ -25,6 +25,7 @@
 	</div>
 	
 	<div class="container">
+		
 		<div class="column">
 			<table id="id_listcontainer">
 				<thead></thead>
@@ -40,7 +41,7 @@
 					<input type="text" id="id_name" name="name" required>
 				</p>
 				<p>
-					<label>Scegli un nuovo padre</label>
+					<label>Seleziona il padre:</label>
 					<select id="id_father" name="fatherId"></select>
 				</p>
 				<p>
@@ -48,9 +49,10 @@
 				</p>
 			</form>
 		</div>
+		
 	</div>
+	
 	<div id="id_modal" class="modal">
-
   	<!-- Modal content -->
   	<div class="modal-content" id="id_modal">
     	<span class="close">&times;</span>

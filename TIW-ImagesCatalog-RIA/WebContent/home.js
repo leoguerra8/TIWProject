@@ -4,7 +4,8 @@
 	let updateQueue = [];
 	let allCategories = [];
 	const MAX_CATEGORIES = 9;
-	let closeEvent, cancelEvent, confirmEvent;
+	let updated = new Boolean(false);
+	let localMove = new Boolean(false);
 
 	window.addEventListener("load", () => {
 		if (sessionStorage.getItem("username") == null) {
@@ -53,6 +54,7 @@
 			updateModal.show();
 		} else {
 			dest.className = "not-selected";
+			alert("Spostamento non consentito");
 		}
 	}
 
@@ -152,6 +154,7 @@
 					categoriesList.update(allCategories.sort(function(c1, c2) { return (c1.code).localeCompare(c2.code) }));
 				}
 				this.savebtn.style.display = "inline-block";
+				localMove = true;
 				categoryForm.disable();
 			} else {
 				this.close();
@@ -208,7 +211,10 @@
 						if (req.readyState == XMLHttpRequest.DONE) {
 							var message = req.responseText;
 							if (req.status == 200) {
+								updated = true;
+								localMove = false;
 								orchestrator.refresh();
+								alert("ABC");
 							} else if (req.status == 403) {
 								window.location.href = req.getResponseHeader("Location");
 								window.sessionStorage.removeItem("username");
@@ -276,21 +282,25 @@
 			this.form.querySelector("input[type='button'].submit").addEventListener('click', (e) => {
 				if (this.form.checkValidity()) {
 					var self = this;
-					makeCall("POST", 'CreateCategory', e.target.closest("form"),
-					function(req) {
-						if (req.readyState == XMLHttpRequest.DONE) {
-							var message = req.responseText;
-							if (req.status == 200) {
-								orchestrator.refresh();
-							} else if (req.status == 403) {
-								window.location.href = req.getResponseHeader("Location");
-								window.sessionStorage.removeItem("username");
-							} else {
-								self.alert.textContent = message;
-								self.reset();
+					if(localMove = false){
+						makeCall("POST", 'CreateCategory', e.target.closest("form"),
+						function(req) {
+							if (req.readyState == XMLHttpRequest.DONE) {
+								var message = req.responseText;
+								if (req.status == 200) {
+									orchestrator.refresh();
+								} else if (req.status == 403) {
+									window.location.href = req.getResponseHeader("Location");
+									window.sessionStorage.removeItem("username");
+								} else {
+									self.alert.textContent = message;
+									self.reset();
+								}
 							}
-						}
-					});
+						});
+					} else {
+						alert("Non puoi aggiungere una nuova categoria se hai modifiche non salvate!");
+					}
 				}
 			})
 		}
@@ -367,7 +377,6 @@
 		}
 		
 		this.refresh = function() {
-			alertContainer.textContent = "";
 			categoriesList.reset();
 			categoryForm.reset();
 			categoriesList.show();
@@ -376,6 +385,10 @@
 			startElement = undefined;
 			dest = undefined;
 			updateQueue = [];
+			if(updated == true){
+				updated = false;
+				alert("La lista delle categorie è stata aggiornata correttamente!");
+			}
 		}
 	}
 })();
