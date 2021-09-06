@@ -2,14 +2,11 @@ package it.polimi.tiw.catalog.controllers;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.stream.*;
 
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -25,7 +22,6 @@ import it.polimi.tiw.catalog.utils.ConnectionHandler;
 
 @WebServlet("/UpdateCategories")
 public class UpdateCategories extends HttpServlet {
-	private static final int MAX_CATEGORIES = 9;
 	private static final long serialVersionUID = 1L;
 	private Connection connection;
 	
@@ -34,7 +30,6 @@ public class UpdateCategories extends HttpServlet {
     }
     
     public void init() throws ServletException {
-    	ServletContext servletContext = getServletContext();
 		connection = ConnectionHandler.getConnection(getServletContext());
 	}
     
