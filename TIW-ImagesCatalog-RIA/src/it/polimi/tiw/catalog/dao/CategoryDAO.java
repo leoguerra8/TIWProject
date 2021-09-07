@@ -145,8 +145,22 @@ public class CategoryDAO {
 		}
 	}
 
+	public String findMaxRootCode() {
+		String query = "SELECT MAX(code) AS code FROM categories WHERE ISNULL(father)";
+		try(Statement statement = connection.createStatement();) {	
+			ResultSet result = statement.executeQuery(query);
+			if(result.next()) {
+				return result.getString("code");
+			} else {
+				throw new SQLException("Something went wrong while retrieving the last code of root categories");
+			}
+		} catch (SQLException | NumberFormatException e) {
+			e.printStackTrace();
+			return "-1";
+		}
+	}
+	
 	public String updateCategories(ArrayList<CategoryUpdate> categoryUpdateArray) throws SQLException {
-		connection.setAutoCommit(false);
 		try {
 			for(CategoryUpdate category : categoryUpdateArray) {
 				String lastChildNewFatherCode;
@@ -156,10 +170,14 @@ public class CategoryDAO {
 				String oldCategoryCode = category.getOldCategoryCode();
 				int newFatherId = category.getNewFatherId();
 				int oldFatherId = category.getOldFatherId();
-
+				
 				try {
+					if(oldFatherId == 0) {
+						lastChildOldFatherCode = this.findMaxRootCode();
+					} else {
+						lastChildOldFatherCode = this.findLastChildCode(oldFatherId);
+					}
 					lastChildNewFatherCode = this.findLastChildCode(newFatherId);
-					lastChildOldFatherCode = this.findLastChildCode(oldFatherId);
 
 					int lastDigit = Character.getNumericValue(lastChildNewFatherCode.charAt(lastChildNewFatherCode.length()-1));
 					if (lastDigit == MAX_CATEGORIES) {
@@ -176,52 +194,82 @@ public class CategoryDAO {
 					e.printStackTrace();
 					return "Something went wrong during the update";
 				}
+				
 				String update1 = "UPDATE categories SET code = ?, father = ? WHERE id = ?";
-				String update2 = "UPDATE categories SET code = ? WHERE code = ?";
 				String query = "SELECT code FROM categories WHERE code LIKE CONCAT(?, '%', '') AND code != ?";
-
-				connection.setAutoCommit(false);
-				PreparedStatement pStatement1 = connection.prepareStatement(update1);
-				PreparedStatement pStatement2 = connection.prepareStatement(query);
-				pStatement1.setString(1, newCategoryCode);
-				pStatement1.setInt(2, newFatherId);
-				pStatement1.setInt(3, category.getCategoryId());
-				pStatement2.setString(1, oldCategoryCode);
-				pStatement2.setString(2, newCategoryCode);
-				pStatement1.executeUpdate();
-				ResultSet res1 = pStatement2.executeQuery();
-				while (res1.next()) {
-					String oldChildCode = res1.getString("code");
-					PreparedStatement pStatement5 = connection.prepareStatement(update2);
-					String newChildCode = newCategoryCode + oldChildCode.substring(oldCategoryCode.length());
-					pStatement5.setString(1, newChildCode);
-					pStatement5.setString(2, oldChildCode);
-					pStatement5.executeUpdate();
-				}
-				String lastBrotherCode = this.findLastChildCode(oldFatherId);
-				if (!lastBrotherCode.equals("-1") && lastBrotherCode.compareTo(oldCategoryCode) > 0) {
-					PreparedStatement pStatement3 = connection.prepareStatement(update2);
-					PreparedStatement pStatement4 = connection.prepareStatement(query);
-					pStatement3.setString(1, oldCategoryCode);
-					pStatement3.setString(2, lastBrotherCode);
-					pStatement4.setString(1, lastBrotherCode);
-					pStatement4.setString(2, newCategoryCode);
-					pStatement3.executeUpdate();
-					ResultSet res2 = pStatement4.executeQuery();
+				String update2 = "UPDATE categories SET code = ? WHERE code = ?";
+				String queryFill = "SELECT code FROM categories WHERE code LIKE CONCAT(?, '%', '')";
+				try {
+					connection.setAutoCommit(false);
+					
+					PreparedStatement pStatement1 = connection.prepareStatement(update1);
+					PreparedStatement pStatement2 = connection.prepareStatement(query);
+					
+					// update the moved category
+					pStatement1.setString(1, newCategoryCode);
+					pStatement1.setInt(2, newFatherId);
+					pStatement1.setInt(3, category.getCategoryId());
+					pStatement1.executeUpdate();
+					
+					// find all the moved category descendants and update them accordingly
+					pStatement2.setString(1, oldCategoryCode);
+					pStatement2.setString(2, newCategoryCode);
+					ResultSet res2 = pStatement2.executeQuery();
 					while (res2.next()) {
 						String oldChildCode = res2.getString("code");
-						PreparedStatement pStatement6 = connection.prepareStatement(update2);
-						String newChildCode = oldCategoryCode + oldChildCode.substring(lastBrotherCode.length());
-						pStatement6.setString(1, newChildCode);
-						pStatement6.setString(2, oldChildCode);
-						pStatement6.executeUpdate();
+						PreparedStatement pStatement3 = connection.prepareStatement(update2);
+						String newChildCode = newCategoryCode + oldChildCode.substring(oldCategoryCode.length());
+						pStatement3.setString(1, newChildCode);
+						pStatement3.setString(2, oldChildCode);
+						pStatement3.executeUpdate();
+					}
+					
+					// fill the hole
+					String lastBrotherCode = null;
+					if (oldFatherId == 0) {
+						lastBrotherCode = this.findMaxRootCode();
+					} else {
+						lastBrotherCode = this.findLastChildCode(oldFatherId);
+					}
+					
+					// if the moved category had at least one bigger brother
+					if (!lastBrotherCode.equals("-1") && lastBrotherCode.compareTo(oldCategoryCode) > 0) {
+						PreparedStatement pStatement4 = connection.prepareStatement(update2);
+						PreparedStatement pStatement5 = connection.prepareStatement(queryFill);
+						
+						// move the biggest brother in its old place
+						pStatement4.setString(1, oldCategoryCode);
+						pStatement4.setString(2, lastBrotherCode);
+						pStatement4.executeUpdate();
+						
+						// move all the biggest brother's descendants accordingly
+						pStatement5.setString(1, lastBrotherCode);
+						ResultSet res5 = pStatement5.executeQuery();
+						while (res5.next()) {
+							String oldChildCode = res5.getString("code");
+							PreparedStatement pStatement6 = connection.prepareStatement(update2);
+							String newChildCode = oldCategoryCode + oldChildCode.substring(lastBrotherCode.length());
+							pStatement6.setString(1, newChildCode);
+							pStatement6.setString(2, oldChildCode);
+							pStatement6.executeUpdate();
+						}
+					}
+				} catch (SQLException e) {
+					if (connection != null) {
+						try {
+							System.err.print("Transaction is being rolled back");
+							connection.rollback();
+							return "Something went wrong during the update";
+						} catch (SQLException ex) {
+							ex.printStackTrace();
+							return "Something went wrong during the rollback";
+						}
 					}
 				}
 			}
 			connection.commit();
 			return "OK";
-		}
-		catch (SQLException e) {
+		} catch (SQLException e) {
 			if (connection != null) {
 				try {
 					System.err.print("Transaction is being rolled back");
@@ -234,61 +282,6 @@ public class CategoryDAO {
 			}
 		}
 		return null;
-	}
-
-	public void updateCategory(int categoryId, int oldFatherId, int newFatherId, String oldCategoryCode, String newCategoryCode) throws SQLException {
-		String update1 = "UPDATE categories SET code = ?, father = ? WHERE id = ?";
-		String update2 = "UPDATE categories SET code = ? WHERE code = ?";
-		String query = "SELECT code FROM categories WHERE code LIKE CONCAT(?, '%', '') AND code != ?";
-		try {
-			connection.setAutoCommit(false);
-			PreparedStatement pStatement1 = connection.prepareStatement(update1);
-			PreparedStatement pStatement2 = connection.prepareStatement(query);
-			pStatement1.setString(1, newCategoryCode);
-			pStatement1.setInt(2, newFatherId);
-			pStatement1.setInt(3, categoryId);
-			pStatement2.setString(1, oldCategoryCode);
-			pStatement2.setString(2, newCategoryCode);
-			pStatement1.executeUpdate();
-			ResultSet res1 = pStatement2.executeQuery();
-			while (res1.next()) {
-				String oldChildCode = res1.getString("code");
-				PreparedStatement pStatement5 = connection.prepareStatement(update2);
-				String newChildCode = newCategoryCode + oldChildCode.substring(oldCategoryCode.length());
-				pStatement5.setString(1, newChildCode);
-				pStatement5.setString(2, oldChildCode);
-				pStatement5.executeUpdate();
-			}
-			String lastBrotherCode = this.findLastChildCode(oldFatherId);
-			if (!lastBrotherCode.equals("-1") && lastBrotherCode.compareTo(oldCategoryCode) > 0) {
-				PreparedStatement pStatement3 = connection.prepareStatement(update2);
-				PreparedStatement pStatement4 = connection.prepareStatement(query);
-				pStatement3.setString(1, oldCategoryCode);
-				pStatement3.setString(2, lastBrotherCode);
-				pStatement4.setString(1, lastBrotherCode);
-				pStatement4.setString(2, newCategoryCode);
-				pStatement3.executeUpdate();
-				ResultSet res2 = pStatement4.executeQuery();
-				while (res2.next()) {
-					String oldChildCode = res2.getString("code");
-					PreparedStatement pStatement6 = connection.prepareStatement(update2);
-					String newChildCode = oldCategoryCode + oldChildCode.substring(lastBrotherCode.length());
-					pStatement6.setString(1, newChildCode);
-					pStatement6.setString(2, oldChildCode);
-					pStatement6.executeUpdate();
-				}
-			}
-			connection.commit();
-		} catch (SQLException e) {
-			if (connection != null) {
-				try {
-					System.err.print("Transaction is being rolled back");
-					connection.rollback();
-				} catch (SQLException ex) {
-					ex.printStackTrace();;
-				}
-			}
-		}
 	}
 
 	public boolean existsCategory(String name) throws SQLException {

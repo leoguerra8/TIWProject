@@ -80,8 +80,12 @@ public class UpdateCategory extends HttpServlet {
 		String newFatherCode;
 		
 		try {
+			if(Integer.parseInt(oldFatherId) == 0) {
+				lastChildOldFatherCode = categoryDAO.findMaxRootCode();
+			} else {
+				lastChildOldFatherCode = categoryDAO.findLastChildCode(Integer.parseInt(oldFatherId));
+			}
 			lastChildNewFatherCode = categoryDAO.findLastChildCode(Integer.parseInt(newFatherId));
-			lastChildOldFatherCode = categoryDAO.findLastChildCode(Integer.parseInt(oldFatherId));
 			newFatherCode = categoryDAO.findCategoryCode(Integer.parseInt(newFatherId));
 
 			int lastDigit = Character.getNumericValue(lastChildNewFatherCode.charAt(lastChildNewFatherCode.length()-1));
