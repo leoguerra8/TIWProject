@@ -42,7 +42,7 @@ CREATE TABLE `categories` (
 
 LOCK TABLES `categories` WRITE;
 /*!40000 ALTER TABLE `categories` DISABLE KEYS */;
-INSERT INTO `categories` VALUES (1,'Archeologia','1',NULL),(2,'Dinosauri','11',1),(3,'Saurischi','111',2),(4,'Ornitorischi','112',2),(5,'Tirannosauro','1111',3),(6,'Spinosauro','1112',3),(7,'Triceratopo','1121',4),(8,'Stegosauro','1122',4),(9,'Informatica','2',NULL),(10,'Linguaggi di programmazione','21',9),(11,'C','2121',20),(12,'Java','2111',19),(13,'Scienze','3',NULL),(14,'Fisica','31',13),(15,'Chimica','32',13),(16,'Biologia','33',13),(17,'Meteoriti','12',2),(19,'Lunguaggi a oggetti','211',10),(20,'Linguaggi funzionali','212',10),(41,'Fisica quantistica','312',14),(42,'Fisica classica','311',14),(43,'Chimica organica','321',15),(44,'Scienze umane','34',13);
+INSERT INTO `categories` VALUES (1,'Archeologia','1',NULL),(2,'Dinosauri','11',1),(3,'Saurischi','111',2),(4,'Ornitorischi','112',2),(5,'Tirannosauro','1111',3),(6,'Spinosauro','1112',3),(7,'Triceratopo','1121',4),(8,'Stegosauro','1122',4),(9,'Informatica','2',NULL),(10,'Linguaggi di programmazione','21',9),(11,'C','2121',20),(12,'Java','2111',19),(13,'Scienze','3',NULL),(14,'Fisica','31',13),(15,'Chimica','32',13),(16,'Biologia','33',13),(19,'Lunguaggi a oggetti','211',10),(20,'Linguaggi funzionali','212',10),(41,'Fisica quantistica','312',14),(42,'Fisica classica','311',14),(43,'Chimica organica','321',15),(44,'Scienze umane','34',13),(45,'Chimica inorganica','322',15);
 /*!40000 ALTER TABLE `categories` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -84,4 +84,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-09-06 18:52:48
+-- Dump completed on 2021-09-07 16:02:29
