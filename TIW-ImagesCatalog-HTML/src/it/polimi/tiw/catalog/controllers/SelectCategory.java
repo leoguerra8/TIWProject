@@ -50,15 +50,32 @@ public class SelectCategory extends HttpServlet {
 	    String categoryId = null;
 	    String fatherId = null;
 	    String categoryCode = null;
-		
+	    
 	    categoryId = request.getParameter("categoryId");
 	    fatherId = request.getParameter("fatherId");
 	    categoryCode = request.getParameter("categoryCode");
+	    
 	    if (categoryId == null || categoryId.isEmpty() || 
 	    		fatherId == null || fatherId.isEmpty() ||
 	    		categoryCode == null || categoryCode.isEmpty()) {
 	    	response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			response.getWriter().println("Missing or incorrect parameters");
+			return;
+	    }
+	    
+	    CategoryDAO categoryDAO = new CategoryDAO(connection);
+	    Boolean legitStartingCategory = true;
+	    try {
+	    	legitStartingCategory = categoryDAO.legitCategory(Integer.parseInt(categoryId), categoryCode, Integer.parseInt(fatherId));
+	    } catch (SQLException | NumberFormatException e) {
+	    	response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			response.getWriter().println("Missing or incorrect parameters");
+			return;
+	    }
+	    
+	    if (!(legitStartingCategory)) {
+	    	response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			response.getWriter().println("Incorrect source!");
 			return;
 	    }
 		
@@ -75,7 +92,7 @@ public class SelectCategory extends HttpServlet {
 	    }
 	    
 	    List<Category> categories = null;
-	    CategoryDAO categoryDAO = new CategoryDAO(connection);
+//	    CategoryDAO categoryDAO = new CategoryDAO(connection);
 	    try {
 	    	categories = categoryDAO.findAllCategories();
 	    } catch (SQLException e) {

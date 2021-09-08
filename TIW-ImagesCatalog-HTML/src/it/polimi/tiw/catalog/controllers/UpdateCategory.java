@@ -60,6 +60,26 @@ public class UpdateCategory extends HttpServlet {
 			response.getWriter().println("Missing or incorrect parameters");
 			return;
 	    }
+	    
+	    CategoryDAO categoryDAO = new CategoryDAO(connection);
+	    Boolean legitStartingCategory = true;
+	    Boolean legitDestinationCategory = true;
+	    try {
+	    	legitStartingCategory = categoryDAO.legitCategory(Integer.parseInt(categoryId), oldCategoryCode, Integer.parseInt(oldFatherId));
+	    	legitDestinationCategory = categoryDAO.legitDestinationCategory(Integer.parseInt(categoryId), Integer.parseInt(oldFatherId), Integer.parseInt(newFatherId));
+	    } catch (SQLException e) {
+	    	response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			response.getWriter().println(e.getMessage());
+			return;
+	    }
+	    
+	    if (!(legitStartingCategory) || !(legitDestinationCategory)) {
+	    	response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			response.getWriter().println("Incorrect destination!");
+			return;
+	    }
+	    
+	    
 		
 	    try {
 	    	if (Integer.parseInt(categoryId) < 0 || Integer.parseInt(newFatherId) < 0) {
@@ -73,7 +93,7 @@ public class UpdateCategory extends HttpServlet {
 			return;
 	    }
 	    
-	    CategoryDAO categoryDAO = new CategoryDAO(connection);
+//	    CategoryDAO categoryDAO = new CategoryDAO(connection);
 	    
 	    String lastChildNewFatherCode;
 	    String lastChildOldFatherCode;
