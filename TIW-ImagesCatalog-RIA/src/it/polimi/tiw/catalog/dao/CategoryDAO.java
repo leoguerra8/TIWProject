@@ -303,7 +303,7 @@ public class CategoryDAO {
 	}
 	
 	public boolean legitCategory(Integer id, String code, Integer father) throws SQLException {
-		String query = "SELECT * FROM categories WHERE id = ? AND code = ? AND father = ?";
+		String query = "SELECT * FROM categories WHERE id = ? AND code = ? AND (father = ? OR ISNULL(father))";
 		try(PreparedStatement pStatement = connection.prepareStatement(query);) {	
 			pStatement.setInt(1, id);
 			pStatement.setString(2, code);

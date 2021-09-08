@@ -79,8 +79,6 @@ public class UpdateCategory extends HttpServlet {
 			return;
 	    }
 	    
-	    
-		
 	    try {
 	    	if (Integer.parseInt(categoryId) < 0 || Integer.parseInt(newFatherId) < 0) {
 	    		response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
