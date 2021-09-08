@@ -33,6 +33,8 @@ CREATE TABLE `categories` (
   UNIQUE KEY `code_UNIQUE` (`code`),
   KEY `father` (`father`),
   CONSTRAINT `categories_ibfk_1` FOREIGN KEY (`father`) REFERENCES `categories` (`id`)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
