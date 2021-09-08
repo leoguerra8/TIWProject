@@ -171,6 +171,11 @@ public class CategoryDAO {
 				int newFatherId = category.getNewFatherId();
 				int oldFatherId = category.getOldFatherId();
 				
+				if(		!(legitCategory(category.getCategoryId(), oldCategoryCode, oldFatherId)) ||
+						!(legitDestinationCategory(category.getCategoryId(), oldFatherId, newFatherId)) ) {
+					return "The update queue was not legit!";
+				}
+				
 				try {
 					if(oldFatherId == 0) {
 						lastChildOldFatherCode = this.findMaxRootCode();
@@ -288,6 +293,37 @@ public class CategoryDAO {
 		String query = "SELECT * FROM categories WHERE name = ?";
 		try(PreparedStatement pStatement = connection.prepareStatement(query);) {	
 			pStatement.setString(1, name);
+			ResultSet result = pStatement.executeQuery();
+			if(result.next()) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+	}
+	
+	public boolean legitCategory(Integer id, String code, Integer father) throws SQLException {
+		String query = "SELECT * FROM categories WHERE id = ? AND code = ? AND father = ?";
+		try(PreparedStatement pStatement = connection.prepareStatement(query);) {	
+			pStatement.setInt(1, id);
+			pStatement.setString(2, code);
+			pStatement.setInt(3, father);
+			ResultSet result = pStatement.executeQuery();
+			if(result.next()) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+	}
+	
+	public boolean legitDestinationCategory(Integer id, Integer oldFatherId, Integer newFatherId) throws SQLException {
+		
+		if(id == newFatherId || oldFatherId == newFatherId || getCategorySubtree(id).contains(newFatherId)) return false;
+		
+		String query = "SELECT * FROM categories WHERE id = ?";
+		try(PreparedStatement pStatement = connection.prepareStatement(query);) {	
+			pStatement.setInt(1, id);
 			ResultSet result = pStatement.executeQuery();
 			if(result.next()) {
 				return true;
