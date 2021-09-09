@@ -318,9 +318,7 @@ public class CategoryDAO {
 	}
 	
 	public boolean legitDestinationCategory(Integer id, Integer oldFatherId, Integer newFatherId) throws SQLException {
-		
 		if(id == newFatherId || oldFatherId == newFatherId || getCategorySubtree(id).contains(newFatherId)) return false;
-		
 		String query = "SELECT * FROM categories WHERE id = ?";
 		try(PreparedStatement pStatement = connection.prepareStatement(query);) {	
 			pStatement.setInt(1, id);

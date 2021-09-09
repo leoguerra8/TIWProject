@@ -4,7 +4,6 @@
 	let updateQueue = [];
 	let allCategories = [];
 	const MAX_CATEGORIES = 9;
-	let updated = new Boolean(false);
 
 	window.addEventListener("load", () => {
 		if (sessionStorage.getItem("username") == null) {
@@ -102,7 +101,8 @@
 		}
 	}
 
-	// Constructors of view components
+	// --- Constructors of view components ---
+    
 	function PersonalMessage(_name, _surname, messagecontainer) {
 		this.name = _name;
 		this.surname = _surname;
@@ -227,7 +227,6 @@
 						if (req.readyState == XMLHttpRequest.DONE) {
 							var message = req.responseText;
 							if (req.status == 200) {
-								updated = true;
 								orchestrator.refresh();
 								afterUpdateModal.show();
 							} else if (req.status == 403) {

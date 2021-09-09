@@ -47,9 +47,6 @@ public class GoToHomePage extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-
-//		HttpSession session = request.getSession();
-//		User user = (User)session.getAttribute("user");
 		CategoryDAO categoryDAO = new CategoryDAO(connection);
 		List<Category> categories;
 		try {

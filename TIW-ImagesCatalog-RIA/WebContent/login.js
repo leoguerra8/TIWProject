@@ -28,7 +28,6 @@
                             break;
 
                         case 400: //Bad request
-
                             document.getElementById("errorMsg").textContent = message;
                             break;
 
@@ -37,19 +36,14 @@
                             break;
                         
                         case 500: //Internal server error
-
-                        document.getElementById("errorMsg").textContent = message;
-                        break;
-
+	                        document.getElementById("errorMsg").textContent = message;
+	                        break;
                     }
-
                 }
-            }
-            );
-        } else {
-
-            form.reportValidity();
+            });
         
+        } else {
+            form.reportValidity();
         }
     });
 

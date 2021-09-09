@@ -21,19 +21,24 @@
 	<div class="container">
 		<div class="column">
 			<div class="row" th:each="category : ${categories}">
+				
 				<div class="column" id="left-column">
 					<p
 						th:text="${category.indent() + ' ' + category.code + ' ' + category.name}"
-						th:style="${(onSelection == true && category.belongsTo(subtreeIndexes)) ? 'color:#ff1a1a' : 'color:#000000'}">1 First</p>
+						th:style="${(onSelection == true && category.belongsTo(subtreeIndexes)) ? 'color:#ff1a1a' : 'color:#000000'}">1 First
+					</p>
 				</div>
+				
 				<div class="move-column" id="right-column">
-
-						<form th:if="${onSelection == false}"
+					<form
+						th:if="${onSelection == false}"
 						th:action="@{/SelectCategory}" method="POST"
-						id="move-category-form"><input type="hidden" name="categoryId" th:value="${category.id}">
+						id="move-category-form">
+						<input type="hidden" name="categoryId" th:value="${category.id}">
 						<input type="hidden" name="fatherId" th:value="${category.fatherId}">
 						<input type="hidden" name="categoryCode" th:value="${category.code}">
-						<input type="submit" id="moveSubmit" th:value="#{Move}" /></form>
+						<input type="submit" id="moveSubmit" th:value="#{Move}" />
+					</form>
 					<form
 						th:unless="${(onSelection == false || category.belongsTo(subtreeIndexes)) || category.id == fatherId}"
 						th:action="@{/UpdateCategory}" method="POST"
@@ -47,26 +52,28 @@
 				</div>
 			</div>
 		</div>
+		
 		<div class="column formbox">
 			<h1 th:text="#{FormTitle}">Create a new category</h1>
 			<form th:action="@{/CreateCategory}" method="POST" autocomplete="off">
 				<p>
-					<input type="text" name="name" th:placeholder="#{NamePlaceholder}"
-						required>
+					<input type="text" name="name" th:placeholder="#{NamePlaceholder}" required>
 				</p>
 				<p>
-					<label th:text="#{FatherLabel}" for="fatherId">Choose a
-						father:</label> <select name="fatherId" th:field="*{fatherId}"
-						th:disabled="${isRoot} == 'on'">
+					<label th:text="#{FatherLabel}" for="fatherId">Choose a father:</label>
+					<select name="fatherId" th:field="*{fatherId}" th:disabled="${isRoot} == 'on'">
 						<option th:utext="'NONE (' + #{Root} + ')'" th:value="-1"></option>
 						<option th:each="category : ${categories}"
 							th:value="${category.id}"
-							th:utext="${category.code + ' ' + category.name}"></option>
+							th:utext="${category.code + ' ' + category.name}">
+						</option>
 					</select>
 				</p>
+				
 				<p>
 					<input type="submit" th:value="#{CreateButton}">
 				</p>
+				
 			</form>
 		</div>
 	</div>

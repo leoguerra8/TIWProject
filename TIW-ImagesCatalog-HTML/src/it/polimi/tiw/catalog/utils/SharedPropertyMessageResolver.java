@@ -29,7 +29,6 @@ public class SharedPropertyMessageResolver extends StandardMessageResolver {
 			Locale locale) {
 
 		String finalpath = "/WEB-INF/" + directory + "/" + fileName + ".html";
-		//System.out.println(finalpath);
 		templateResource = new ServletContextTemplateResource(context, finalpath, null);
 		return super.resolveMessagesForTemplate(finalpath, templateResource, locale);
 	}

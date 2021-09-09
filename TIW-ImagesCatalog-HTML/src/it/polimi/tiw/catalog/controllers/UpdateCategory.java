@@ -91,8 +91,6 @@ public class UpdateCategory extends HttpServlet {
 			return;
 	    }
 	    
-//	    CategoryDAO categoryDAO = new CategoryDAO(connection);
-	    
 	    String lastChildNewFatherCode;
 	    String lastChildOldFatherCode;
 		String newFatherCode;

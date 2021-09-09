@@ -92,7 +92,6 @@ public class SelectCategory extends HttpServlet {
 	    }
 	    
 	    List<Category> categories = null;
-//	    CategoryDAO categoryDAO = new CategoryDAO(connection);
 	    try {
 	    	categories = categoryDAO.findAllCategories();
 	    } catch (SQLException e) {

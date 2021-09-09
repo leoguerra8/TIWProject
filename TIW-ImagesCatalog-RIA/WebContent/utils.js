@@ -1,5 +1,5 @@
 /**
- * Gestione delle chiamate AJAX
+ * AJAX management
  */
 
  function makeCall(method, url, formElement, cback, reset = true) {
