@@ -75,7 +75,7 @@ public class UpdateCategory extends HttpServlet {
 	    
 	    if (!(legitStartingCategory) || !(legitDestinationCategory)) {
 	    	response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			response.getWriter().println("Incorrect destination!");
+			response.getWriter().println("Incorrect source or destination!");
 			return;
 	    }
 	    
