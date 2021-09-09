@@ -321,6 +321,8 @@
 					} else {
 						window.alert("Non puoi aggiungere una categoria prima di aver salvato le modifiche");
 					}
+				} else {
+					this.form.reportValidity();
 				}
 			})
 		}
