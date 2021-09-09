@@ -211,6 +211,7 @@
 								self.alert.textContent = "Nessuna categoria";
 								return;
 							}
+							self.alert.textContent = "";
 							self.update(categories);
 						} else if (req.status == 403) {
 							window.location.href = req.getResponseHeader("Location");
@@ -306,6 +307,7 @@
 								if (req.readyState == XMLHttpRequest.DONE) {
 									var message = req.responseText;
 									if (req.status == 200) {
+										self.alert.textContent = "";
 										orchestrator.refresh();
 									} else if (req.status == 403) {
 										window.location.href = req.getResponseHeader("Location");
