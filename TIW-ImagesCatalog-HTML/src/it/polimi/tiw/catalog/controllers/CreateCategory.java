@@ -48,6 +48,12 @@ public class CreateCategory extends HttpServlet {
 			response.getWriter().println("Incorrect or missing request parameters");
 			return;
 		}
+		
+		if (name == null || fatherId == null || name.isEmpty()) {
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			response.getWriter().println("Incorrect or missing request parameters");
+			return;
+		}
 
 		// Create Category
 		int categoryId;

@@ -69,7 +69,7 @@ public class CheckLogin extends HttpServlet {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			ctx.setVariable("isValid", false);
 			ctx.setVariable("errorCode", 1);
-			return;
+			//return;
 		}
 		
 		UserDAO userDao = new UserDAO(connection);
