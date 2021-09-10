@@ -7,18 +7,19 @@ In this project we implemented a website for the management of a hierarchical ca
 
 ### Implementation
 The website has been developed in two versions:
-- HTML pure,
+- HTML pure (with the support of [Thymeleaf](https://www.thymeleaf.org/)),
 - RIA (Rich Internet Applications).
 
 ### Documentation
-There are two different sets of slides (both in Italian), one for the [HTML pure version](https://github.com/leoguerra8/TIWProject/tree/master/Documentazione/HTML.pdf) and the other for th [RIA version](https://github.com/leoguerra8/TIWProject/tree/master/Documentazione/RIA.pdf) of the project, respectively, with:
+There are two different sets of slides (both in Italian), one for the [HTML pure version](https://github.com/leoguerra8/TIWProject/tree/master/Documentazione/HTML.pdf) and the other for the [RIA version](https://github.com/leoguerra8/TIWProject/tree/master/Documentazione/RIA.pdf) of the project, respectively, containing:
 - data and requests analysis,
 - database design and local database schema,
 - application design,
-- events/actions and controller/event handler tables (only for the RIA version),
+- events / actions and controller / event handler tables (only for the RIA version),
 - components description,
 - events diagrams,
-- utils packages descriptions. 
+- utils packages descriptions.
+The HTML version has been developed supporting the internationalization (through [Thymeleaf](https://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html)).
 
 ### Executing the project
 The latest version of the project is available at [this GitHub Page](https://github.com/leoguerra8/TIWProject).
