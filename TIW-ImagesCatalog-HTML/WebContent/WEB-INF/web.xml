@@ -29,5 +29,7 @@
     <url-pattern>/CreateCategory</url-pattern>
     <url-pattern>/GoToHomePage</url-pattern>
     <url-pattern>/Logout</url-pattern>
+    <url-pattern>/SelectCategory</url-pattern>
+    <url-pattern>/UpdateCategory</url-pattern>
   </filter-mapping>
 </web-app>
